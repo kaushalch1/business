@@ -6,8 +6,8 @@
         <style>
             .game-board{
                 display: grid;
-                grid-template-columns: repeat(11,1fr);
-                grid-template-rows: repeat(11,1fr);
+                grid-template-columns: repeat(10,1fr);
+                grid-template-rows: repeat(10,1fr);
                 width: 90vmin;
                 height: 85vmin;
                 background: #ECF0F1;
@@ -32,12 +32,11 @@
             }
             .cell{
                 border: 1px solid gray;
-
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-end;
-                font-size: 0.6rem;
+                font-size: 0.75rem;
                 font-weight: bold;
                 position:relative;
                 text-align: center;
@@ -48,7 +47,7 @@
             .corner{
                 background: #DCDDE1;
                 justify-content: center;
-                font-size: 0.8rem;
+                font-size: 0.9rem;
             }
             #title{
                 position: absolute;
@@ -81,16 +80,16 @@
         <div class="game-board">
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;">Rest House</div>
 
-            
-            <div class="cell" style="grid-row: 2;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 3;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 4;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 5;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 6;grid-column: 11"></div>
-            <div class="cell" style="grid-row: 7;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 8;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 9;grid-column: 11;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 11;"></div>
+
+            <div class="cell" style="grid-row: 2;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 3;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 4;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 5;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 6;grid-column: 10"></div>
+            <div class="cell" style="grid-row: 7;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 8;grid-column: 10;"></div>
+            <div class="cell" style="grid-row: 9;grid-column: 10;"></div>
+            <!-- <div class="cell" style="grid-row: 10;grid-column: 10;"></div> -->
 
             <h2 id="title">Business board <br>game</h2>
             <div class="cell" style="grid-row: 1;grid-column: 2;"></div>
@@ -102,21 +101,21 @@
             <div class="cell" style="grid-row: 1;grid-column: 8;"></div>
             <div class="cell" style="grid-row: 1;grid-column: 9;"></div>
             <div class="cell" style="grid-row: 1;grid-column: 10"></div>
-            <div class="cell corner c2" style="grid-row: 1;grid-column: 11">Jail</div>
+            <div class="cell corner c2" style="grid-row: 1;grid-column: 10">Jail</div>
 
-            <div class="cell corner c4" style="grid-row: 11;grid-column: 1">Club</div>
-            <div class="cell" style="grid-row: 11;grid-column: 2;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 3;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 4;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 5;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 6;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 7;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 8;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 9;"></div>
-            <div class="cell" style="grid-row: 11;grid-column: 10;"></div>
-            <div class="cell corner c3" style="grid-row: 11;grid-column: 11;">Go</div>
+            <div class="cell corner c4" style="grid-row: 10;grid-column: 1">Club</div>
+            <div class="cell" style="grid-row: 10;grid-column: 2;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 3;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 4;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 5;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 6;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 7;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 8;"></div>
+            <div class="cell" style="grid-row: 10;grid-column: 9;"></div>
+            <!-- <div class="cell" style="grid-row: 10;grid-column: 10;"></div> -->
+            <div class="cell corner c3" style="grid-row: 10;grid-column: 10;">Go</div>
 
-            <div class="cell" style="grid-row: 10;grid-column: 1;"></div>
+            <!-- <div class="cell" style="grid-row: 10;grid-column: 1;"></div> -->
             <div class="cell" style="grid-row: 9;grid-column: 1;"></div>
             <div class="cell" style="grid-row: 8;grid-column: 1;"></div>
             <div class="cell" style="grid-row: 7;grid-column: 1;"></div>
@@ -127,7 +126,44 @@
             <div class="cell" style="grid-row: 2;grid-column: 1;"></div>
         </div>
         <script>
+            let p1=25000,p2=25000,p3=25000,p4=25000;
+            let turns=[1,2,3,4];
+            let map=[
+                ["Mumbai",8500,800],//1
+                ["Water works",3200,300],//2
+                ["Ahmedabad",4000,400],//3
+                ["Air India",10500,1000],//4
+                ["Cochin",3000,300],//5
+                ["Bangalore",5000,500],//6
+                ["Hyderabad",5500,550],//7
+                ["Kolkata",4500,450],//8
+                ["Electric Company",2500,200],//9
+                ["Assam",2700,250],//10
 
+                ["Western railway",9500,900],//11
+                ["Cuttack",3000,300],//12
+                ["Chance",,],//13
+                ["Patna",2000,200],//14
+                ["Gwalior",3000,300],//15
+                ["Indore",3500,350],//16
+                ["Jaipur",3000,300],//17
+                ["Motor boat",7500,750],//18
+                ["Northern Railway",9500,950],//19
+                ["Kanpur",4000,400],//20
+
+                ["Utility",3200,320],//21
+                ["Lucknow",3500,350],//22
+                ["Chandigarh",2500,250],//23
+                ["Delhi",6000,600],//24
+                ["Tax",0,600],//25
+                ["Shimla",2200,220],//26
+                ["Chance",,],//27
+                ["Southern Railway",9500,950],//28
+                ["Community chest",,],//29
+                ["Srinagar",5000,500],//30
+
+                ["Wealth tax",,],//31
+            ]
         </script>
     </body>
 </html>
