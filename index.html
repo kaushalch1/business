@@ -1,5 +1,7 @@
-<html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>
             Business board game
         </title>
@@ -8,8 +10,8 @@
                 display: grid;
                 grid-template-columns: repeat(10,1fr);
                 grid-template-rows: repeat(10,1fr);
-                width: 90vmin;
-                height: 85vmin;
+                width: 105vmin;
+                height: 95vmin;
                 background: #ECF0F1;
                 border: 5px solid #333333;
                 position: relative;
@@ -35,14 +37,19 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                justify-content: flex-end;
+                justify-content: center;
                 font-size: 0.75rem;
+                line-height: 1.15;
                 font-weight: bold;
                 position:relative;
                 text-align: center;
+                overflow-wrap: normal;
+                word-break: normal;
+                hyphens: none;
                 background: white;
                 padding: 2px;
                 box-sizing: border-box;
+                
             }
             .corner{
                 background: #DCDDE1;
@@ -56,6 +63,7 @@
                 display: grid;
                 place-items: center;
                 text-align: center;
+                pointer-events: none;
             }
             .c1{
                 background-color: #FBBF24;
@@ -73,62 +81,127 @@
                 background-color: rgb(106, 106, 225);
                 color: white;
             }
+            .price-card{
+                position: absolute;
+                bottom: calc(100% + 6px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: white;
+                color: #222;
+                border: 1px solid #bfc5cc;
+                border-radius: 6px;
+                padding: 6px 8px;
+                font-size: 0.68rem;
+                line-height: 1.25;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease;
+                z-index: 20;
+            }
+            .cell:hover .price-card{
+                opacity: 1;
+            }
+            .flip-cell{
+                padding: 2px;
+                perspective: 700px;
+            }
+            .flip-inner{
+                position: relative;
+                width: 100%;
+                height: 100%;
+                transform-style: preserve-3d;
+                transition: transform 0.45s ease;
+            }
+            .flip-cell:hover .flip-inner{
+                transform: rotateY(180deg);
+            }
+            .flip-front,
+            .flip-back{
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                overflow-wrap: normal;
+                word-break: normal;
+                hyphens: none;
+                padding: 0;
+                box-sizing: border-box;
+                backface-visibility: hidden;
+            }
+            .flip-front{
+                background: white;
+            }
+            .flip-back{
+                background: white;
+                color: #222;
+                flex-direction: column;
+                font-size: 0.66rem;
+                line-height: 1.25;
+                transform: rotateY(180deg);
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
-        
         <div class="game-board">
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;">Rest House</div>
 
-
-            <div class="cell" style="grid-row: 2;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 3;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 4;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 5;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 6;grid-column: 10"></div>
-            <div class="cell" style="grid-row: 7;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 8;grid-column: 10;"></div>
-            <div class="cell" style="grid-row: 9;grid-column: 10;"></div>
-            <!-- <div class="cell" style="grid-row: 10;grid-column: 10;"></div> -->
-
+            <div class="cell flip-cell" style="grid-row: 2;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Kolkata</div><div class="flip-back"><div>Buy: ₹4500</div><div>Rent: ₹450</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 3;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Hyderabad</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹550</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 4;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Bangalore</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹500</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 5;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Cochin</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 6;grid-column: 10"><div class="flip-inner"><div class="flip-front">Air India</div><div class="flip-back"><div>Buy: ₹10000</div><div>Rent: ₹1000</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 7;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Ahmedabad</div><div class="flip-back"><div>Buy: ₹4000</div><div>Rent: ₹400</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 8;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Water works</div><div class="flip-back"><div>Buy: ₹3200</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 9;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Mumbai</div><div class="flip-back"><div>Buy: ₹8500</div><div>Rent: ₹800</div></div></div></div>
+            
             <h2 id="title">Business board <br>game</h2>
-            <div class="cell" style="grid-row: 1;grid-column: 2;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 3"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 4;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 5;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 6;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 7;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 8;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 9;"></div>
-            <div class="cell" style="grid-row: 1;grid-column: 10"></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 2"><div class="flip-inner"><div class="flip-front">Indore</div><div class="flip-back"><div>Buy: ₹3500</div><div>Rent: ₹350</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 3;"><div class="flip-inner"><div class="flip-front">Gwalior</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 4;"><div class="flip-inner"><div class="flip-front">Patna</div><div class="flip-back"><div>Buy: ₹2000</div><div>Rent: ₹200</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 5;"><div class="flip-inner"><div class="flip-front">Chance</div><div class="flip-back"><div>Buy: --</div><div>Rent: --</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 6;"><div class="flip-inner"><div class="flip-front">Cuttack</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 7;"><div class="flip-inner"><div class="flip-front">Western railway</div><div class="flip-back"><div>Buy: ₹9500</div><div>Rent: ₹950</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 8;"><div class="flip-inner"><div class="flip-front">Assam</div><div class="flip-back"><div>Buy: ₹2700</div><div>Rent: ₹250</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 9"><div class="flip-inner"><div class="flip-front">Electric Company</div><div class="flip-back"><div>Buy: ₹2500</div><div>Rent: ₹200</div></div></div></div>
             <div class="cell corner c2" style="grid-row: 1;grid-column: 10">Jail</div>
 
             <div class="cell corner c4" style="grid-row: 10;grid-column: 1">Club</div>
-            <div class="cell" style="grid-row: 10;grid-column: 2;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 3;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 4;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 5;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 6;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 7;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 8;"></div>
-            <div class="cell" style="grid-row: 10;grid-column: 9;"></div>
-            <!-- <div class="cell" style="grid-row: 10;grid-column: 10;"></div> -->
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 2;"><div class="flip-inner"><div class="flip-front">Tax</div><div class="flip-back"><div>Rent: ₹600</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 3;"><div class="flip-inner"><div class="flip-front">Shimla</div><div class="flip-back"><div>Buy: ₹2200</div><div>Rent: ₹220</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 4;"><div class="flip-inner"><div class="flip-front">Chance</div><div class="flip-back"><div>--</div><div>---</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 5;"><div class="flip-inner"><div class="flip-front">Southern Railway</div><div class="flip-back"><div>Buy: 9500</div><div>Rent: 950</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 6;"><div class="flip-inner"><div class="flip-front">Community Chest</div><div class="flip-back"><div>---</div><div>-- -</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 7;"><div class="flip-inner"><div class="flip-front">Srinagar</div><div class="flip-back"><div>Buy: 5000</div><div>Rent: 500</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 8;"><div class="flip-inner"><div class="flip-front">Wealth Tax</div><div class="flip-back"><div>Rent: 700</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 9;"><div class="flip-inner"><div class="flip-front">Vizag</div><div class="flip-back"><div>Buy: 3200</div><div>Rent: 320</div></div></div></div>
             <div class="cell corner c3" style="grid-row: 10;grid-column: 10;">Go</div>
 
-            <!-- <div class="cell" style="grid-row: 10;grid-column: 1;"></div> -->
-            <div class="cell" style="grid-row: 9;grid-column: 1;"></div>
-            <div class="cell" style="grid-row: 8;grid-column: 1;"></div>
-            <div class="cell" style="grid-row: 7;grid-column: 1;"></div>
-            <div class="cell" style="grid-column: 1;grid-row: 6;"></div>
-            <div class="cell" style="grid-row: 5;grid-column: 1;"></div>
-            <div class="cell" style="grid-row: 4;grid-column: 1;"></div>
-            <div class="cell" style="grid-row: 3;grid-column: 1;"></div>
-            <div class="cell" style="grid-row: 2;grid-column: 1;"></div>
+            <div class="cell flip-cell" style="grid-row: 9;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Delhi</div><div class="flip-back"><div>Buy: 6000</div><div>Rent: 600</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 8;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Chandigarh</div><div class="flip-back"><div>Buy: 2500</div><div>Rent: 250</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 7;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Lucknow</div><div class="flip-back"><div>Buy: 3500</div><div>Rent: 350</div></div></div></div>
+            <div class="cell flip-cell" style="grid-column: 1;grid-row: 6;"><div class="flip-inner"><div class="flip-front">Utility</div><div class="flip-back"><div>Buy: 3200</div><div>Rent: 320</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 5;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Kanpur</div><div class="flip-back"><div>Buy: 4000</div><div>Rent: 400</div></div></div></div>
+            <div class="cell" style="grid-row: 4;grid-column: 1;">Northern Railway</div>
+            <div class="cell" style="grid-row: 3;grid-column: 1;">Motor Boat</div>
+            <div class="cell" style="grid-row: 2;grid-column: 1;">Jaipur</div>
+            
         </div>
         <script>
             let p1=25000,p2=25000,p3=25000,p4=25000;
-            let turns=[1,2,3,4];
+            let p1loc=0,p2loc=0,p3loc=0,p4loc=0;
+            let turns=["p1","p2","p3","p4"],turns1=0,x=-1;
+            let assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[];
+            /*function game(x){
+                if(x)
+            }*/
             let map=[
+                //group 1
+                ["Go",0,0],//0
                 ["Mumbai",8500,800],//1
                 ["Water works",3200,300],//2
                 ["Ahmedabad",4000,400],//3
@@ -137,33 +210,34 @@
                 ["Bangalore",5000,500],//6
                 ["Hyderabad",5500,550],//7
                 ["Kolkata",4500,450],//8
+                //group 2
                 ["Electric Company",2500,200],//9
                 ["Assam",2700,250],//10
-
                 ["Western railway",9500,900],//11
                 ["Cuttack",3000,300],//12
-                ["Chance",,],//13
+                ["Chance",0,0],//13
                 ["Patna",2000,200],//14
                 ["Gwalior",3000,300],//15
                 ["Indore",3500,350],//16
+                //group 3
                 ["Jaipur",3000,300],//17
                 ["Motor boat",7500,750],//18
                 ["Northern Railway",9500,950],//19
                 ["Kanpur",4000,400],//20
-
                 ["Utility",3200,320],//21
                 ["Lucknow",3500,350],//22
                 ["Chandigarh",2500,250],//23
                 ["Delhi",6000,600],//24
+                //group 4
                 ["Tax",0,600],//25
                 ["Shimla",2200,220],//26
-                ["Chance",,],//27
+                ["Chance",0,0],//27
                 ["Southern Railway",9500,950],//28
-                ["Community chest",,],//29
+                ["Community chest",0,0],//29
                 ["Srinagar",5000,500],//30
-
-                ["Wealth tax",,],//31
-            ]
+                ["Wealth tax",0,700],//31
+                ["Vizag",3200,320]//32
+            ];
         </script>
     </body>
 </html>
