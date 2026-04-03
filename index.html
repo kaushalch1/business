@@ -157,10 +157,14 @@
                 font-family: 'Segoe UI', Arial, sans-serif;
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                /* color: var(--text-gold); */
+                align-items: flex-start;
                 min-height: 100vh;
                 margin: 0;
+                padding: 24px;
+                box-sizing: border-box;
                 background-image: radial-gradient(circle, #2c3e50 0%, #000 100%);
+                overflow-x: auto;
             }
 
             .game-table {
@@ -174,13 +178,15 @@
                 flex-direction: column;
                 gap: 20px;
                 border: 12px solid #4a3b2c;
-                width: fit-content;
+                width: min(100%, 1280px);
+                box-sizing: border-box;
             }
 
             .top-section {
                 display: grid;
-                grid-template-columns: 240px 620px 240px;
-                grid-gap: 20px;
+                grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
+                gap: 20px;
+                align-items: start;
             }
 
             .sidebar {
@@ -201,11 +207,7 @@
             .panel h3 { 
                 margin: 0 0 10px 0; 
                 font-size: 11px; 
-                text-transform: uppercase;
-                color: var(--text-gold);
-                letter-spacing: 2px;
             }
-
             .dice-tray {
                 background: var(--slot-deep);
                 height: 100px;
@@ -243,6 +245,13 @@
                 border: 5px solid #222;
             }
 
+            .game-board {
+                width: min(100%, 620px);
+                aspect-ratio: 1 / 1;
+                height: auto;
+                justify-self: center;
+            }
+
             .cell {
                 border: 1px solid #ccc;
                 display: flex;
@@ -263,38 +272,42 @@
                 font-size: 40px;
                 font-weight: 900;
                 color: rgba(0,0,0,0.06);
-            }
-
-            .rest { background: #ffcc00; }
-            .jail { background: #ff4444; color: white; }
-            .club { background: #5555ff; color: white; }
-            .go   { background: #44ff44; font-size: 20px; }
-
+            }            
             .bottom-player-row {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 15px;
-                padding-top: 10px;
+                display: flex;
+                flex-direction: row;
+                gap: 3%;
+                width: 500%;
             }
 
             .player-card {
                 background: var(--panel-inset);
-                padding: 12px;
+                padding: 8px;
                 border-radius: 10px;
                 box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5);
                 text-align: center;
+                box-sizing: border-box;
+                width: 225%;
+            }
+
+            .player-card h3 {
+                margin: 0 0 6px 0;
+                font-size: 12px;
+                line-height: 1.1;
+                white-space: nowrap;
             }
 
             .display-screen {
                 background: #080808;
                 color: var(--screen-green);
                 font-family: 'Courier New', monospace;
-                font-size: 20px;
-                padding: 8px;
+                font-size: 13px;
+                padding: 6px 4px;
                 text-align: right;
                 border-radius: 4px;
                 border: 1px solid #333;
                 box-shadow: inset 0 0 8px rgba(0,255,65,0.2);
+                white-space: nowrap;
             }
 
             .bank-note {
@@ -306,13 +319,103 @@
                 border-radius: 2px;
                 opacity: 0.7;
             }
-            h1{
-                background-color: #080808;
-                color: var(--screen-green);
+            .rent{
+                margin-top: 5%;
+                height: 25px;
+                width: 50px;
+                background-color: #DD4C4C;
+                border: 1px solid whitesmoke;
+                border-radius: 5px;
+            }
+            .buy{
+                margin-top: 5%;
+                height: 25px;
+                width: 50px;
+                background-color: #72EC6C;
+                border: 1px solid white;
+                border-radius: 5px;
+                margin-right: 10%;
+            }
+            @media (max-width: 1180px) {
+                .game-table {
+                    padding: 20px;
+                }
+
+                .top-section {
+                    grid-template-columns: 1fr;
+                }
+
+                .game-board {
+                    width: min(100%, 620px);
+                }
+
+                .bottom-player-row {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 720px) {
+                body {
+                    padding: 6px;
+                }
+
+                .game-table {
+                    padding: 12px;
+                    border-width: 6px;
+                    border-radius: 14px;
+                }
+
+                .top-section {
+                    gap: 12px;
+                }
+
+                .panel {
+                    padding: 10px;
+                }
+
+                .bottom-player-row {
+                    gap: 6px;
+                    padding-top: 8px;
+                }
+
+                .player-card {
+                    padding: 6px;
+                    border-radius: 8px;
+                }
+
+                .player-card h3 {
+                    font-size: 11px;
+                    margin-bottom: 4px;
+                }
+
+                .display-screen {
+                    font-size: 12px;
+                    padding: 5px 3px;
+                }
             }
         </style>
+        
     </head>
     <body>
+        <div class="game-table">
+        <div class="top-section">
+            <div class="sidebar">
+                <div class="panel">
+                    <h3>Card Decks</h3>
+                    <div style="height: 160px;background: var(--slot-deep);border-radius: 8px;display: flex;flex-direction: column;justify-content: center;align-items: center;gap: 15px;">
+                        <div style="width: 70%;height: 50px;background: #90caf9;border-radius: 4px;border: 1px solid #222222"></div>
+                        <div style="width: 70%;height: 50px;background: #ffF59d;border-radius: 4px;border: 1px solid #222222;"></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>Dice tray</h3>
+                    <div class="dice-tray">
+                        <!--dice-->
+                        <div class="die" id="id1"></div>
+                    </div>                    
+                    <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click to roll</p>
+                </div>
+            </div>
         <div class="game-board">
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;">Rest House</div>
 
@@ -355,8 +458,32 @@
             <div class="cell flip-cell" style="grid-row: 4;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Northern Railway</div><div class="flip-back"><div>Buy: 9000</div><div>Rent: 900</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 3;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Motor Boat</div><div class="flip-back"><div>Buy: 7500</div><div>Rent: 750</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 2;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Jaipur</div><div class="flip-back"><div>Buy: 3000</div><div>rent: 300</div></div></div></div>
+            <!--Dice-->
             <div><button id="btn1" style="width:50px;height:50px;" onclick="game()"></button></div>  
+        
         </div>
+        <div class="bottom-player-row">
+            <div class="player-card">
+                <h3>Player 1</h3>
+                <div class="display-screen" id="p1rate">₹25000</div>
+                <button class="buy">Buy</button>
+                <button class="rent">Rent</button>
+            </div>
+            <div class="player-card">
+                <h3>Player 2</h3>
+                <div class="display-screen" id="p2rate">₹25000</div>
+            </div>
+            <div class="player-card">
+                <h3>Player 3</h3>
+                <div class="display-screen" id="p3rate">₹25000</div>
+            </div>
+            <div class="player-card">
+                <h3>Player 4</h3>
+                <div class="display-screen" id="p4rate">₹25000</div>
+            </div>
+        </div>
+        </div>
+        
         <script>
             var p1=25000,p2=25000,p3=25000,p4=25000;
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
@@ -371,6 +498,7 @@
             function game(){
                 var player=turns[turns1%4];
                 let random=Math.floor(Math.random()*6)+1;
+                let text=player+"rate";
                 diceroll(random);
                 console.log(random);
                 window[player+"loc"]+=random;
@@ -378,6 +506,7 @@
                 var currentSquare=map[window[player+"loc"]];
                 if(currentSquare && currentSquare[2]>0){
                     window[player]-=currentSquare[2];
+                    document.getElementById(text).innerText=window[player];
                 }else{
                     //can buy
                     if(window[player]>curr){
@@ -399,35 +528,35 @@
                 ["Hyderabad",5500,550],//7
                 ["Kolkata",4500,450],//8
                 //group 2
-                ["Jail",0,0],
-                ["Electric Company",2500,200],//9
-                ["Assam",2700,250],//10
-                ["Western railway",9500,900],//11
-                ["Cuttack",3000,300],//12
-                ["Chance",0,0],//13
-                ["Patna",2000,200],//14
-                ["Gwalior",3000,300],//15
-                ["Indore",3500,350],//16
+                ["Jail",0,0],//9
+                ["Electric Company",2500,200],//10
+                ["Assam",2700,250],//11
+                ["Western railway",9500,900],//12
+                ["Cuttack",3000,300],//13
+                ["Chance",0,0],//14
+                ["Patna",2000,200],//15
+                ["Gwalior",3000,300],//16
+                ["Indore",3500,350],//17
                 //group 3
                 ["Rest",0,0],
-                ["Jaipur",3000,300],//17
-                ["Motor boat",7500,750],//18
-                ["Northern Railway",9000,900],//19
-                ["Kanpur",4000,400],//20
-                ["Utility",3200,320],//21
-                ["Lucknow",3500,350],//22
-                ["Chandigarh",2500,250],//23
-                ["Delhi",6000,600],//24
+                ["Jaipur",3000,300],//18
+                ["Motor boat",7500,750],//19
+                ["Northern Railway",9000,900],//20
+                ["Kanpur",4000,400],//21
+                ["Utility",3200,320],//22
+                ["Lucknow",3500,350],//23
+                ["Chandigarh",2500,250],//24
+                ["Delhi",6000,600],//25
                 //group 4
-                ["Club",0,0],
-                ["Tax",0,600],//25
-                ["Shimla",2200,220],//26
-                ["Chance",0,0],//27
-                ["Southern Railway",9500,950],//28
-                ["Community chest",0,0],//29
-                ["Srinagar",5000,500],//30
-                ["Wealth tax",0,700],//31
-                ["Vizag",3200,320]//32
+                ["Club",0,0],//26
+                ["Tax",0,600],//27
+                ["Shimla",2200,220],//28
+                ["Chance",0,0],//29
+                ["Southern Railway",9500,950],//30
+                ["Community chest",0,0],//31
+                ["Srinagar",5000,500],//32
+                ["Wealth tax",0,700],//33
+                ["Vizag",3200,320]//34
             ];
         </script>
     </body>
