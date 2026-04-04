@@ -328,6 +328,7 @@
                 border-radius: 5px;
                 color:  white;
                 cursor: pointer;
+                display: none;
             }
             .buy{
                 cursor: pointer;
@@ -338,6 +339,7 @@
                 border: 1px solid #A8F5A2;
                 border-radius: 5px;
                 margin-right: 10%;
+                display: none;
             }
             .rent:hover{
                 background-color: #212830;
@@ -406,7 +408,45 @@
                     padding: 5px 3px;
                 }
             }
-        </style>
+            .player-piece-container{
+                position: absolute;
+                bottom: 4px;
+                left: 0;right: 0;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 3px;
+                pointer-events: none;
+                z-index: 10;
+            }
+            .player-piece{
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                border: 1px solid rgba(255,255,255,0.4);
+                box-shadow: 0 2 4px rgba(0,0,0,0.4);
+                inset: -2 -2 4px rgba(0,0,0,0.3);
+            }
+            .player-piece::after{
+                content: '';
+                position: absolute;
+                top: 2px;
+                left: 3px;
+                width: 5px;
+                height: 3px;
+                background: rgba(255,255,255,0.5);
+                border-radius: 50%;
+            }
+            .p1-piece{
+                background: radial-gradient(circle at 30% 30%,#FF5F6D,#b91d1D);
+            }
+            .p2-piece{
+                background: radial-gradient(circle at 30% 30%,#00f2fe,#004e92);
+            }
+            .p3-piece{
+                background: radial-gradient(circle at 30% 30%,#42E695,#3bb2b8);
+            }
+</style>
         
     </head>
     <body>
@@ -430,8 +470,9 @@
                 </div>
             </div>
         <div class="game-board">
+            <div class="player-piece p1-piece"></div>
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;">Rest House</div>
-
+            
             <div class="cell flip-cell" style="grid-row: 2;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Kolkata</div><div class="flip-back"><div>Buy: ₹4500</div><div>Rent: ₹450</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 3;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Hyderabad</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹550</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 4;grid-column: 10;"><div class="flip-inner"><div class="flip-front">Bangalore</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹500</div></div></div></div>
@@ -473,30 +514,36 @@
             <div class="cell flip-cell" style="grid-row: 2;grid-column: 1;"><div class="flip-inner"><div class="flip-front">Jaipur</div><div class="flip-back"><div>Buy: 3000</div><div>rent: 300</div></div></div></div>
             <!--Dice-->
             <div><button id="btn1" style="width:50px;height:50px;" onclick="game()"></button></div>  
-        
+            
         </div>
         <div class="bottom-player-row">
             <div class="player-card">
                 <h3>Player 1</h3>
                 <div class="display-screen" id="p1rate">₹25000</div>
-                <button class="buy" onclick="payements('buy p1')">Buy</button>
-                <button class="rent" onclick="payements('rent p1')">Rent</button>
+                <button class="buy p1" onclick="payements('buy p1')">Buy</button>
+                <button class="rent p1" onclick="payements('rent p1')">Rent</button>
             </div>
             <div class="player-card">
                 <h3>Player 2</h3>
                 <div class="display-screen" id="p2rate">₹25000</div>
+                <button class="buy p2" onclick="payements('buy p2')">Buy</button>
+                <button class="rent p2" onclick="payements('rent p2')">Rent</button>
             </div>
             <div class="player-card">
                 <h3>Player 3</h3>
                 <div class="display-screen" id="p3rate">₹25000</div>
+                <button class="buy p3" onclick="payements('buy p3')">Buy</button>
+                <button class="rent p3" onclick="payements('rent p3')">Rent</button>
             </div>
             <div class="player-card">
                 <h3>Player 4</h3>
                 <div class="display-screen" id="p4rate">₹25000</div>
+                <button class="buy p4" onclick="payements('buy p4')">Buy</button>
+                <button class="rent p4" onclick="payements('rent p4')">Rent</button>
             </div>
-        </div>
-        </div>
         
+        </div>
+        </div>        
         <script>
             var p1=25000,p2=25000,p3=25000,p4=25000;
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
@@ -514,6 +561,10 @@
                 player=turns[turns1%4];
                 let random=Math.floor(Math.random()*6)+1;
                 let text=player+"rate";
+                let btns=document.getElementsByClassName(player);
+                for(let btn of btns){
+                    btn.style.display="inline-block";
+                }
                 diceroll(random);
                 console.log(random);
                 window[player+"loc"]+=random;
@@ -533,6 +584,9 @@
                 }
                 console.log(window[player]);
                 turns1++;
+                for(let btn of btns){
+                    btn.style.display="none";
+                }
             }
             function payements(x1){
                 if(player===x1.split(" ")[1]){
@@ -547,7 +601,7 @@
                 ["Mumbai",8500,800],//1
                 ["Water works",3200,300],//2
                 ["Ahmedabad",4000,400],//3
-                ["Air India",10500,1000],//4
+                ["Air India",10000,1000],//4
                 ["Cochin",3000,300],//5
                 ["Bangalore",5000,500],//6
                 ["Hyderabad",5500,550],//7
