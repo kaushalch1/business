@@ -324,17 +324,30 @@
                 height: 25px;
                 width: 50px;
                 background-color: #DD4C4C;
-                border: 1px solid whitesmoke;
+                border: 1px solid #F28C8C;
                 border-radius: 5px;
+                color:  white;
+                cursor: pointer;
             }
             .buy{
+                cursor: pointer;
                 margin-top: 5%;
                 height: 25px;
                 width: 50px;
                 background-color: #72EC6C;
-                border: 1px solid white;
+                border: 1px solid #A8F5A2;
                 border-radius: 5px;
                 margin-right: 10%;
+            }
+            .rent:hover{
+                background-color: #212830;
+                color: #FA4B3C;
+                border: none;
+            }
+            .buy:hover{
+                border: none;
+                color: #72EC6C;
+                background-color: #212830;
             }
             @media (max-width: 1180px) {
                 .game-table {
@@ -466,8 +479,8 @@
             <div class="player-card">
                 <h3>Player 1</h3>
                 <div class="display-screen" id="p1rate">₹25000</div>
-                <button class="buy">Buy</button>
-                <button class="rent">Rent</button>
+                <button class="buy" onclick="payements('buy p1')">Buy</button>
+                <button class="rent" onclick="payements('rent p1')">Rent</button>
             </div>
             <div class="player-card">
                 <h3>Player 2</h3>
@@ -489,14 +502,16 @@
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
             var turns=["p1","p2","p3","p4"],turns1=0,x=-1;
             var assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[],a1;
+            var payement="",player="";
+            let resolveChoice
             var btn1=document.getElementById("btn1");
             function diceroll(random){
                 let a1 = random + ".png";
                 btn1.style.backgroundImage="url('" + a1 + "')";
                 btn1.style.backgroundSize="cover";
             }
-            function game(){
-                var player=turns[turns1%4];
+            async function game(){
+                player=turns[turns1%4];
                 let random=Math.floor(Math.random()*6)+1;
                 let text=player+"rate";
                 diceroll(random);
@@ -504,17 +519,27 @@
                 window[player+"loc"]+=random;
                 window[player+"loc"]%=map.length;
                 var currentSquare=map[window[player+"loc"]];
-                if(currentSquare && currentSquare[2]>0){
+                let choice=await new Promise(resolve=>{
+                    resolveChoice=resolve;
+                })
+                let choices=payement.split(" ")[0];
+                if(currentSquare && currentSquare[2]>0&&choices==="buy"&&!window['assets'+player].includes(currentSquare[0])){
+                    window[player]-=currentSquare[1];
+                    document.getElementById(text).innerText=window[player];
+                    window['assets'+player].push(currentSquare[0]);
+                }else if(choices==="rent"){
                     window[player]-=currentSquare[2];
                     document.getElementById(text).innerText=window[player];
-                }else{
-                    //can buy
-                    if(window[player]>curr){
-                        document.getElement
-                    }
                 }
                 console.log(window[player]);
                 turns1++;
+            }
+            function payements(x1){
+                if(player===x1.split(" ")[1]){
+                    payement=x1;
+                    resolveChoice();
+                }
+                /*console.log(x1);*/
             }
             let map=[
                 //group 1
