@@ -577,7 +577,7 @@
             var payement="",player="";
             let resolveChoice;
             var btn1=document.getElementById("btn1");
-            var jail=[-1,-1,-1,-1];
+            var jail=[0,0,0,0],homemoney=[0,0,0,0];
             //let a2=document.getElementById("btn");
             //let btn3=document.getElementByClassName("g1")
             //let a3=window[player];
@@ -625,6 +625,13 @@
                 if(dice===turns1-1){
                     dice++;
                     player=turns[turns1%4];
+                    const playerIndex=Number(player[1])-1;
+
+                    if(jail[playerIndex]>0){
+                        jail[playerIndex]--;
+                        turns1++;
+                        return;
+                    }
                     let random=probdie();
                     let text=player+"rate";
                     let btns=document.getElementsByClassName(player);
@@ -632,22 +639,30 @@
                         btn.style.display="inline-block";
                     }
                     diceroll(random);
-                    if(widow[player]%map.length===9 && window[player]){
-                        gotojail();
-                        turns++;
+                    console.log(random);
+                    const previousLoc=window[player+"loc"];
+                    const nextRawLoc=previousLoc+random;
+                    window[player+"loc"]=nextRawLoc%map.length;
+
+                    if(nextRawLoc>=map.length){
+                        window[player]+=10000;
+                        document.getElementById(text).innerText=window[player];
+                    }
+
+                    if((window[player+"loc"]%map.length)===9){
+                        jail[playerIndex]=2;
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
                         return;
                     }
-                    console.log(random);
-                    window[player+"loc"]+=random;
-                    window[player+"loc"]%=map.length;
                     var currentSquare=map[window[player+"loc"]];
                     if(totalassets.includes(currentSquare[0])){
                         btns[0].style.cursor="not-allowed";
                     }
                     piecelocation(player);
-                    if(window[player+"loc"]%map.length===0){
-                        window[player]+=5000;
-                    }
+                        
                     if(random===6){
                         turns1--;
                         dice--;
@@ -673,29 +688,6 @@
                     for(let btn of btns){
                         btn.style.display="none";
                     }
-                }
-            }
-            function gotojail(){
-                if(player==="p1"&&jail[0]===0){
-                    jail[0]=2;
-                }else{
-                    jail[0]--;
-                    
-                }
-                if(player==="p2"&&jail[1]===0){
-                    jail[1]=2;
-                }else{
-                    jail[1]--;
-                }
-                if(player==="p3"&&jail[2]===0){
-                    jail[2]=2;
-                }else{
-                    jail[2]--;
-                }
-                if(player==="p4"&&jail[3]===0){
-                    jail[3]=2;
-                }else{
-                    jail[3]--;
                 }
             }
             function payements(x1){
