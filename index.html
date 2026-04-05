@@ -193,6 +193,8 @@
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
+                width: 100%;
+                max-width: 240px;
             }
 
             .panel {
@@ -274,10 +276,12 @@
                 color: rgba(0,0,0,0.06);
             }            
             .bottom-player-row {
-                display: flex;
-                flex-direction: row;
-                gap: 3%;
-                width: 500%;
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                width: 100%;
+                grid-column: 1 / -1;
+                justify-self: stretch;
             }
 
             .player-card {
@@ -287,7 +291,7 @@
                 box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5);
                 text-align: center;
                 box-sizing: border-box;
-                width: 225%;
+                width: 100%;
             }
 
             .player-card h3 {
@@ -358,6 +362,11 @@
 
                 .top-section {
                     grid-template-columns: 1fr;
+                    justify-items: center;
+                }
+
+                .sidebar {
+                    max-width: 620px;
                 }
 
                 .game-board {
@@ -391,6 +400,7 @@
                 .bottom-player-row {
                     gap: 6px;
                     padding-top: 8px;
+                    grid-template-columns: 1fr;
                 }
 
                 .player-card {
@@ -554,18 +564,20 @@
                 <button class="buy p4" onclick="payements('buy p4')">Buy</button>
                 <button class="rent p4" onclick="payements('rent p4')">Rent</button>
             </div>
-        
         </div>
         </div>        
         <script>
             var p1=25000,p2=25000,p3=25000,p4=25000;
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
-            var turns=["p1","p2","p3","p4"],turns1=0,x=-1;
+            var turns=["p1","p2","p3","p4"],turns1=0,x=-1,dice=-1;
             var assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[],a1,totalassets=[];
+            var p1col="#B91D1D",p2col="#004E92",p3col="#3BB2B8",p4col="#FA709A";
             var payement="",player="";
             let resolveChoice;
             var btn1=document.getElementById("btn1");
-            var id1=21,id2=25,id3=98,id4=100;
+            //let a2=document.getElementById("btn");
+            //let btn3=document.getElementByClassName("g1")
+            //let a3=window[player];
             function diceroll(random){
                 let a1 = random + ".png";
                 btn1.style.backgroundImage="url('" + a1 + "')";
@@ -598,38 +610,50 @@
                 //}
             }
             async function game(){
-                player=turns[turns1%4];
-                let random=Math.floor(Math.random()*6)+1;
-                let text=player+"rate";
-                let btns=document.getElementsByClassName(player);
-                for(let btn of btns){
-                    btn.style.display="inline-block";
-                }
-                diceroll(random);
-                console.log(random);
-                window[player+"loc"]+=random;
-                window[player+"loc"]%=map.length;
-                var currentSquare=map[window[player+"loc"]];
-                piecelocation(player);
-                let choice=await new Promise(resolve=>{
-                    resolveChoice=resolve;
-                })
-                let choices=payement.split(" ")[0];
-                if(currentSquare && currentSquare[2]>0&&choices==="buy"&&!window['assets'+player].includes(currentSquare[0])&&!totalassets.includes(currentSquare[0])){
-                    window[player]-=currentSquare[1];
-                    document.getElementById(text).innerText=window[player];
-                    window['assets'+player].push(currentSquare[0]);
-                    totalassets.push(currentSquare[0]);
-                }else{
-                    if(choices==="rent"){
-                        window[player]-=currentSquare[2];
-                        document.getElementById(text).innerText=window[player];
+                if(dice===turns1-1){
+                    dice++;
+                    player=turns[turns1%4];
+                    let random=Math.floor(Math.random()*6)+1;
+                    let text=player+"rate";
+                    let btns=document.getElementsByClassName(player);
+                    for(let btn of btns){
+                        btn.style.display="inline-block";
                     }
-                }
-                console.log(window[player]);
-                turns1++;
-                for(let btn of btns){
-                    btn.style.display="none";
+                    diceroll(random);
+                    console.log(random);
+                    window[player+"loc"]+=random;
+                    window[player+"loc"]%=map.length;
+                    var currentSquare=map[window[player+"loc"]];
+                    if(totalassets.includes(currentSquare[0])){
+                        btns[0].style.cursor="not-allowed";
+                    }
+                    piecelocation(player);
+                    if(window[player+"loc"]%map.length===0){
+                        window[player]+=5000;
+                    }
+                    let choice=await new Promise(resolve=>{
+                        resolveChoice=resolve;
+                    })
+                    let choices=payement.split(" ")[0];
+                    let lastpurchase=0;
+                    if(currentSquare && currentSquare[2]>0&&choices==="buy"&&!window['assets'+player].includes(currentSquare[0])&&!totalassets.includes(currentSquare[0])){
+                        window[player]-=currentSquare[1];
+                        document.getElementById(text).innerText=window[player];
+                        window['assets'+player].push(currentSquare[0]);
+                        totalassets.push(currentSquare[0]);
+                        let a1=document.getElementById(window[player+"loc"]%34);
+                        a1.style.color=window[player+"col"];
+                        lastpurchase=currentSquare[1];
+                    }else{
+                            window[player]-=currentSquare[2];
+                            document.getElementById(text).innerText=window[player];
+                            lastpurchase=currentsquare[2];
+                    }
+                    console.log(window[player]);
+                    turns1++;
+                    for(let btn of btns){
+                        btn.style.display="none";
+                    }
                 }
             }
             function payements(x1){
@@ -639,6 +663,7 @@
                 }
                 /*console.log(x1);*/
             }
+
             let map=[
                 //group 1
                 ["Go",0,0],//0
