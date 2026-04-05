@@ -479,11 +479,11 @@
                     </div>
                 </div>
                 <div class="panel">
-                    <h3>Dice tray</h3>
+                    <h3 style="color: var(--text-gold);">Dice tray</h3>
                     <div class="dice-tray">
-                        <!--dice-->
-                        <div class="die" id="id1"></div>
-                    </div>                    
+                        <!-- main  dice-->
+                        <button class="die" id="btn1" onclick="game()" title="Roll dice" aria-label="Roll dice"></button>
+                    </div>
                     <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click to roll</p>
                 </div>
             </div>
@@ -536,7 +536,9 @@
             <div class="cell flip-cell" style="grid-row: 3;grid-column: 1;" id="20"><div class="flip-inner"><div class="flip-front">Motor Boat</div><div class="flip-back"><div>Buy: 7500</div><div>Rent: 750</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 2;grid-column: 1;" id="19"><div class="flip-inner"><div class="flip-front">Jaipur</div><div class="flip-back"><div>Buy: 3000</div><div>rent: 300</div></div></div></div>
             <!--Dice-->
-            <div><button id="btn1" style="width:50px;height:50px;" onclick="game()"></button></div>  
+            <!--<div>
+            <button id="btn1" style="width:50px;height:50px;" onclick="game()"></button>
+            </div> -->
             
         </div>
         <div class="bottom-player-row">
@@ -575,6 +577,7 @@
             var payement="",player="";
             let resolveChoice;
             var btn1=document.getElementById("btn1");
+            var jail=[-1,-1,-1,-1];
             //let a2=document.getElementById("btn");
             //let btn3=document.getElementByClassName("g1")
             //let a3=window[player];
@@ -603,23 +606,37 @@
                 //if(player==="p1"){
                     let dele1=document.getElementsByClassName("player-piece "+player+"-piece");
                     dele1[0].remove();
-                    let a1=document.getElementById(window[player+"loc"]%34);
+                    let a1=document.getElementById(window[player+"loc"]%map.length);
                     let newele=document.createElement("div");
                     newele.className="player-piece "+player+"-piece";
                     a1.append(newele);                   
                 //}
             }
+            function probdie(){
+                let r=Math.random();
+                if(r<0.2) return 1;
+                if(r<0.4) return 2;
+                if(r<0.6) return 3;
+                if(r<0.8) return 4;
+                if(r<0.9) return 5;
+                return 6;
+            }
             async function game(){
                 if(dice===turns1-1){
                     dice++;
                     player=turns[turns1%4];
-                    let random=Math.floor(Math.random()*6)+1;
+                    let random=probdie();
                     let text=player+"rate";
                     let btns=document.getElementsByClassName(player);
                     for(let btn of btns){
                         btn.style.display="inline-block";
                     }
                     diceroll(random);
+                    if(widow[player]%map.length===9 && window[player]){
+                        gotojail();
+                        turns++;
+                        return;
+                    }
                     console.log(random);
                     window[player+"loc"]+=random;
                     window[player+"loc"]%=map.length;
@@ -631,6 +648,10 @@
                     if(window[player+"loc"]%map.length===0){
                         window[player]+=5000;
                     }
+                    if(random===6){
+                        turns1--;
+                        dice--;
+                    }
                     let choice=await new Promise(resolve=>{
                         resolveChoice=resolve;
                     })
@@ -641,19 +662,40 @@
                         document.getElementById(text).innerText=window[player];
                         window['assets'+player].push(currentSquare[0]);
                         totalassets.push(currentSquare[0]);
-                        let a1=document.getElementById(window[player+"loc"]%34);
+                        let a1=document.getElementById(window[player+"loc"]%map.length);
                         a1.style.color=window[player+"col"];
-                        lastpurchase=currentSquare[1];
                     }else{
-                            window[player]-=currentSquare[2];
-                            document.getElementById(text).innerText=window[player];
-                            lastpurchase=currentsquare[2];
+                        window[player]-=currentSquare[2];
+                        document.getElementById(text).innerText=window[player];
                     }
                     console.log(window[player]);
                     turns1++;
                     for(let btn of btns){
                         btn.style.display="none";
                     }
+                }
+            }
+            function gotojail(){
+                if(player==="p1"&&jail[0]===0){
+                    jail[0]=2;
+                }else{
+                    jail[0]--;
+                    
+                }
+                if(player==="p2"&&jail[1]===0){
+                    jail[1]=2;
+                }else{
+                    jail[1]--;
+                }
+                if(player==="p3"&&jail[2]===0){
+                    jail[2]=2;
+                }else{
+                    jail[2]--;
+                }
+                if(player==="p4"&&jail[3]===0){
+                    jail[3]=2;
+                }else{
+                    jail[3]--;
                 }
             }
             function payements(x1){
