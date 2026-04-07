@@ -554,25 +554,25 @@
             </div> -->
         </div>
         <div class="bottom-player-row">
-            <div class="player-card">
+            <div class="player-card p1-box">
                 <h3>Player 1</h3>  
                 <div class="display-screen" id="p1rate">₹25000</div>
                 <button class="buy p1" onclick="payements('buy p1')">Buy</button>
                 <button class="rent p1" onclick="payements('rent p1')">Rent</button>
             </div>
-            <div class="player-card">
+            <div class="player-card p2-box">
                 <h3>Player 2</h3>
                 <div class="display-screen" id="p2rate">₹25000</div>
                 <button class="buy p2" onclick="payements('buy p2')">Buy</button>
                 <button class="rent p2" onclick="payements('rent p2')">Rent</button>
             </div>
-            <div class="player-card">
+            <div class="player-card p3-box">
                 <h3>Player 3</h3>
                 <div class="display-screen" id="p3rate">₹25000</div>
                 <button class="buy p3" onclick="payements('buy p3')">Buy</button>
                 <button class="rent p3" onclick="payements('rent p3')">Rent</button>
             </div>
-            <div class="player-card">
+            <div class="player-card p4-box">
                 <h3>Player 4</h3>
                 <div class="display-screen" id="p4rate">₹25000</div>
                 <button class="buy p4" onclick="payements('buy p4')">Buy</button>
@@ -635,11 +635,17 @@
                 if(dice===turns1-1){
                     dice++;
                     player=turns[turns1%4];
+                    let border=document.getElementsByClassName(player+"-box")[0];
+                    if(border){
+                        border.style.border="2.5px solid goldenrod";
+                    }
                     const playerIndex=Number(player[1])-1;
-
                     if(jail[playerIndex]>0){
                         jail[playerIndex]--;
                         turns1++;
+                        if(border){
+                            border.style.border="3px solid #4A3B2C";
+                        }
                         return;
                     }
                     let random=probdie();
@@ -653,7 +659,6 @@
                     const previousLoc=window[player+"loc"];
                     const nextRawLoc=previousLoc+random;
                     window[player+"loc"]=nextRawLoc%map.length;
-
                     if(nextRawLoc>=map.length){
                         window[player]+=10000;
                         document.getElementById(text).innerText=window[player];
@@ -666,6 +671,9 @@
                         for(let btn of btns){
                             btn.style.display="none";
                         }
+                        if(border){
+                            border.style.border="3px solid #4A3B2C";
+                        }
                         return;
                     }
                     var currentSquare=map[window[player+"loc"]];
@@ -674,14 +682,46 @@
                     }
                     piecelocation(player);
                     //corners
-                    if(window[player+"loc"]===0||window[player+"loc"]===9||window[player+"loc"]===18||window[player+"loc"]===27){
+                    if(window[player+"loc"]===0||window[player+"loc"]===9){
                         btns[0].style.cursor="not-allowed";
                         btns[1].style.cursor="not-allowed";
-                        turns1++;dice++;
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        if(border){
+                            border.style.border="3px solid #4A3B2C";
+                        }
                         return;
                     }
                     if(random===6){
                         turns1--;dice--;
+                    }
+                    if(window[player+"loc"]===18){
+                        let resthousebonus=11000;
+                        window[player]+=resthousebonus;
+                        homemoney[playerIndex]+=resthousebonus;
+                        document.getElementById(text).innerText=window[player];
+                        alert(player.toUpperCase()+" rested at Rest House and received ₹11000");
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        if(border) border.style.border="3px solid #4A3B2C";
+                        return;
+                    }
+                    if(window[player+"loc"]===27){
+                        let clubhousefee=4000;
+                        window[player]-=clubhousefee;
+                        homemoney[playerIndex]-=clubhousefee;
+                        document.getElementById(text).innerText=window[player];
+                        alert(player.toUpperCase()+" Vistited club house and spent ₹4000");
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        if(border) border.style.border="3px solid #4A3B2C";
+                        return;
                     }
                     let choice=await new Promise(resolve=>{
                         resolveChoice=resolve;
@@ -724,6 +764,7 @@
                         btn.style.cursor="pointer";
                         btn.style.display="none";
                     }
+                    if(border) border.style.border="3px solid #4A3B2C";
                 }
 
             }
