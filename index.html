@@ -170,7 +170,6 @@
                 background-image: radial-gradient(circle, #2c3e50 0%, #000 100%);
                 overflow-x: auto;
             }
-
             .game-table {
                 background: var(--wood-main);
                 background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 10px),
@@ -308,12 +307,10 @@
                 white-space: nowrap;
                 text-shadow: 0 1px 0 rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.35);
             }
-
             .bottom-player-row .player-card:nth-child(1) h3 { color: var(--p1-title); }
             .bottom-player-row .player-card:nth-child(2) h3 { color: var(--p2-title); }
             .bottom-player-row .player-card:nth-child(3) h3 { color: var(--p3-title); }
             .bottom-player-row .player-card:nth-child(4) h3 { color: var(--p4-title); }
-
             .display-screen {
                 background: #080808;
                 color: var(--screen-green);
@@ -326,7 +323,6 @@
                 box-shadow: inset 0 0 8px rgba(0,255,65,0.2);
                 white-space: nowrap;
             }
-
             .bank-note {
                 width: 30px;
                 height: 18px;
@@ -390,7 +386,6 @@
                     grid-template-columns: repeat(2, minmax(0, 1fr));
                 }
             }
-
             @media (max-width: 720px) {
                 body {
                     padding: 6px;
@@ -477,8 +472,7 @@
                 background: radial-gradient(circle at 30% 30%,#ffe2b2,#f6c97c);
                 bottom:2px;right:2px;
             }
-</style>
-        
+</style>      
     </head>
     <body>
         <div class="game-table">
@@ -497,9 +491,19 @@
                         <!-- main  dice-->
                         <button class="die" id="btn1" onclick="game()" title="Roll dice" aria-label="Roll dice"></button>
                     </div>
-                    <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click to roll</p>
+                    <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click on dice to roll</p>
                 </div>
             </div>
+            <!--<div class="Bank">
+                <h3>Bank</h3>
+                <div class="bank-div">
+                    <div class="banks-money">
+                        <p>Bank's Interest:10% of the total amount</p>
+                        <div class="display-screen1" id="bankrate">50000</div>
+                    </div>
+                </div>
+            </div>
+            <a href="index.html">Index</a>-->
         <div class="game-board">
 
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;" id="18">Rest House</div>
@@ -580,13 +584,13 @@
             var p1=25000,p2=25000,p3=25000,p4=25000;
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
             var turns=["p1","p2","p3","p4"],turns1=0,x=-1,dice=-1;
-            var assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[],a1,totalassets=[];
+            var assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[],a1,totalassets=[],totalcards=0;
             var p1col="#E63F58",p2col="#20AEF3",p3col="#68D9A8",p4col="#F6C97C";
             var payement="",player="";
             let resolveChoice;
             var btn1=document.getElementById("btn1");
             var jail=[0,0,0,0],homemoney=[0,0,0,0];
-
+            var loan=[0,0,0,0],loanamount=[0,0,0,0];
             function diceroll(random){
                 let a1 = random + ".png";
                 btn1.style.backgroundImage="url('" + a1 + "')";
@@ -665,13 +669,19 @@
                         return;
                     }
                     var currentSquare=map[window[player+"loc"]];
-                    if(totalassets.includes(currentSquare[0])||window[player+"loc"]===28||window[player+"loc"]===34){
+                    if(totalassets.includes(currentSquare[0])||window[player+"loc"]==28||window[player+"loc"]===34){
                         btns[0].style.cursor="not-allowed";
                     }
                     piecelocation(player);
+                    //corners
+                    if(window[player+"loc"]===0||window[player+"loc"]===9||window[player+"loc"]===18||window[player+"loc"]===27){
+                        btns[0].style.cursor="not-allowed";
+                        btns[1].style.cursor="not-allowed";
+                        turns1++;dice++;
+                        return;
+                    }
                     if(random===6){
-                        turns1--;
-                        dice--;
+                        turns1--;dice--;
                     }
                     let choice=await new Promise(resolve=>{
                         resolveChoice=resolve;
@@ -685,6 +695,10 @@
                         document.getElementById(text).innerText=window[player];
                         window['assets'+player].push(currentSquare[0]);
                         totalassets.push(currentSquare[0]);
+                        totalcards++;
+                        if(totalcards===30){
+                            winner();
+                        }
                         let a1=document.getElementById(window[player+"loc"]%map.length);
                         a1.style.color=window[player+"col"];
                         currentSquare[3]=player;
@@ -701,6 +715,10 @@
                         }
                     }
                     console.log(window[player]);
+                    if(window[player]<5000){
+                        window[player]+=10000;
+                        window[loanamount[playerIndex]]=10000;
+                    }
                     turns1++;
                     for(let btn of btns){
                         btn.style.cursor="pointer";
@@ -716,48 +734,50 @@
                 }
                 /*console.log(x1);*/
             }
-
+            function winner(){
+                let p1total=p1,p2total=p2,p3total=p3,p4total=p4;
+            }
             let map=[
                 //group 1
                 ["Go",0,0,"Bank"],//0
-                ["Mumbai",8500,800,"Bank"],//1
-                ["Water works",3200,300,"Bank"],//2
-                ["Ahmedabad",4000,400,"Bank"],//3
-                ["Air India",10000,1000,"Bank"],//4
-                ["Cochin",3000,300,"Bank"],//5
-                ["Bangalore",5000,500,"Bank"],//6
-                ["Hyderabad",5500,550,"Bank"],//7
-                ["Kolkata",4500,450,"Bank"],//8
+                ["Mumbai",8500,800,"Bank"],//1           1
+                ["Water works",3200,300,"Bank"],//2       2
+                ["Ahmedabad",4000,400,"Bank"],//3        3
+                ["Air India",10000,1000,"Bank"],//4      4
+                ["Cochin",3000,300,"Bank"],//5           5
+                ["Bangalore",5000,500,"Bank"],//6        6
+                ["Hyderabad",5500,550,"Bank"],//7        7
+                ["Kolkata",4500,450,"Bank"],//8          8
                 //group 2
                 ["Jail",0,0,"Bank"],//9
-                ["Electric Company",2500,200,"Bank"],//10
-                ["Assam",2700,250,"Bank"],//11
-                ["Western railway",9500,900,"Bank"],//12
-                ["Cuttack",3000,300,"Bank"],//13
-                ["Chance",0,0,"Bank"],//14
-                ["Patna",2000,200,"Bank"],//15
-                ["Gwalior",3000,300,"Bank"],//16
-                ["Indore",3500,350,"Bank"],//17
+                ["Electric Company",2500,200,"Bank"],//10 9
+                ["Assam",2700,250,"Bank"],//11            10
+                ["Western railway",9500,900,"Bank"],//12  11
+                ["Cuttack",3000,300,"Bank"],//13          12
+                ["Chance",0,0,"Bank"],//14                    
+                ["Patna",2000,200,"Bank"],//15             13
+                ["Gwalior",3000,300,"Bank"],//16           14
+                ["Indore",3500,350,"Bank"],//17            15
                 //group 3
                 ["Rest",0,0,"Bank"],//18
-                ["Jaipur",3000,300,"Bank"],//19
-                ["Motor boat",7500,750,"Bank"],//20
-                ["Northern Railway",9000,900,"Bank"],//21
-                ["Kanpur",4000,400,"Bank"],//22
-                ["Utility",3200,320,"Bank"],//23
-                ["Lucknow",3500,350,"Bank"],//24
-                ["Chandigarh",2500,250,"Bank"],//25
-                ["Delhi",6000,600,"Bank"],//26
+                ["Jaipur",3000,300,"Bank"],//19             16
+                ["Motor boat",7500,750,"Bank"],//20         17
+                ["Northern Railway",9000,900,"Bank"],//21   18
+                ["Kanpur",4000,400,"Bank"],//22             19
+                ["Utility",3200,320,"Bank"],//23            20
+                ["Lucknow",3500,350,"Bank"],//24            21
+                ["Chandigarh",2500,250,"Bank"],//25         22
+                ["Delhi",6000,600,"Bank"],//26              23
                 //group 4
                 ["Club",0,0,"Bank"],//27
                 ["Tax",0,600,"Bank"],//28
-                ["Shimla",2200,220,"Bank"],//29
-                ["Chance",0,0,"Bank"],//30
-                ["Southern Railway",9500,950,"Bank"],//31
-                ["Community chest",0,0,"Bank"],//32
-                ["Srinagar",5000,500,"Bank"],//33
+                ["Shimla",2200,220,"Bank"],//29            24
+                ["Chance",0,0,"Bank"],//30                
+                ["Southern Railway",9500,950,"Bank"],//31  25
+                ["Community chest",0,0,"Bank"],//32        26
+                ["Srinagar",5000,500,"Bank"],//33          27
                 ["Wealth tax",0,700,"Bank"],//34
-                ["Vizag",3200,320,"Bank"]//35
+                ["Vizag",3200,320,"Bank"]//35              28
             ];
         </script>
     </body>
