@@ -715,10 +715,10 @@
                         }
                     }
                     console.log(window[player]);
-                    if(window[player]<5000){
-                        window[player]+=10000;
-                        window[loanamount[playerIndex]]=10000;
-                    }
+                    //if(window[player]<5000){
+                    //    window[player]+=10000;
+                    //    window[loanamount[playerIndex]]=10000;
+                    //}
                     turns1++;
                     for(let btn of btns){
                         btn.style.cursor="pointer";
@@ -736,6 +736,27 @@
             }
             function winner(){
                 let p1total=p1,p2total=p2,p3total=p3,p4total=p4;
+                for(let i=0;i<assetsp1.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp1[i]);
+                    if(square) p1total+=square[2];
+                }
+                for(let i=0;i<assetsp2.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp2[i]);
+                    if(square) p2total+=square[2];
+                }
+                for(let i=0;i<assetsp3.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp3[i]);
+                    if(square) p3total+=square[2];
+                }
+                for(let i=0;i<assetsp4.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp4[i]);
+                    if(square) p4total+=square[2];
+                }
+                p1total-=loan[0];p2total-=loan[1];
+                p3total-=loan[2];p4total-=loan[3];
+                let sortwinners=[p1total,p2total,p3total,p4total];
+                sortwinners.sort((x,y)=>x-y);
+                let winner=sortwinners[3],winner1=sortwinners[2],winner2=sortwinners[1],winner3=sortwinners[0];
             }
             let map=[
                 //group 1
