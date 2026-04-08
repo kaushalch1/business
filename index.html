@@ -5,7 +5,7 @@
         <title>
             Business board game
         </title>
-<style>
+    <style>
             .game-board{
                 display: grid;
                 grid-template-columns: repeat(10,1fr);
@@ -426,6 +426,38 @@
                     padding: 5px 3px;
                 }
             }
+            .bank-panel{
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+
+            }
+            .bank-balance{
+                background: #080808;
+                color: #FFDE59;
+                font-size: 1.2rem;
+                padding: 12px;
+                text-align: center;
+                border-radius: 6px;
+                border: 2px solid #444444;
+                margin-bottom: 5px;
+                box-shadow: inset 0 0 10px rgba(255,222,90,0.15);
+            }
+            .bank-buttons{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .bank-btn{
+                color: var(--text-gold);
+                border: 1px solid #4A3B2C;
+                background-color: rgb(165, 93, 42);
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 11.4px;
+                text-transform: uppercase;
+                cursor: pointer;
+            }
             .player-piece-container{
                 position: absolute;
                 bottom: 4px;
@@ -472,17 +504,21 @@
                 background: radial-gradient(circle at 30% 30%,#ffe2b2,#f6c97c);
                 bottom:2px;right:2px;
             }
+            
 </style>      
     </head>
     <body>
         <div class="game-table">
         <div class="top-section">
             <div class="sidebar">
-                <div class="panel">
-                    <h3 style="color: var(--text-gold);">Card Decks</h3>
-                    <div style="height: 160px;background: var(--slot-deep);border-radius: 8px;display: flex;flex-direction: column;justify-content: center;align-items: center;gap: 15px;">
-                        <div style="width: 70%;height: 50px;background: #90caf9;border-radius: 4px;border: 1px solid #222222"></div>
-                        <div style="width: 70%;height: 50px;background: #ffF59d;border-radius: 4px;border: 1px solid #222222;"></div>
+                <div class="panel bank-panel">
+                    <h3 style="color: var(--text-gold);">Reserve bank</h3>
+                    <div class="bank-balance" id="bank-total">
+                        ₹50000
+                    </div>
+                    <div class="bank-buttons">
+                        <button class="bank-btn">Take loan</button>
+                        <button class="bank-btn">Pay loan</button>
                     </div>
                 </div>
                 <div class="panel">
@@ -494,16 +530,6 @@
                     <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click on dice to roll</p>
                 </div>
             </div>
-            <!--<div class="Bank">
-                <h3>Bank</h3>
-                <div class="bank-div">
-                    <div class="banks-money">
-                        <p>Bank's Interest:10% of the total amount</p>
-                        <div class="display-screen1" id="bankrate">50000</div>
-                    </div>
-                </div>
-            </div>
-            <a href="index.html">Index</a>-->
         <div class="game-board">
 
             <div class="cell corner c1" style="grid-row:1;grid-column: 1;" id="18">Rest House</div>
@@ -521,7 +547,7 @@
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 2;" id="17"><div class="flip-inner"><div class="flip-front">Indore</div><div class="flip-back"><div>Buy: ₹3500</div><div>Rent: ₹350</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 3;" id="16"><div class="flip-inner"><div class="flip-front">Gwalior</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 4;" id="15"><div class="flip-inner"><div class="flip-front">Patna</div><div class="flip-back"><div>Buy: ₹2000</div><div>Rent: ₹200</div></div></div></div>
-            <div class="cell flip-cell" style="grid-row: 1;grid-column: 5;" id="14"><div class="flip-inner"><div class="flip-front">Chance</div><div class="flip-back"><div>Buy: --</div><div>Rent: --</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 5;" id="14"><div class="flip-inner"><div class="flip-front">Goa</div><div class="flip-back"><div>Buy: ₹3500</div><div>Rent: ₹350</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 6;" id="13"><div class="flip-inner"><div class="flip-front">Cuttack</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 7;" id="12"><div class="flip-inner"><div class="flip-front">Western railway</div><div class="flip-back"><div>Buy: ₹9500</div><div>Rent: ₹950</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 1;grid-column: 8;" id="11"><div class="flip-inner"><div class="flip-front">Assam</div><div class="flip-back"><div>Buy: ₹2700</div><div>Rent: ₹250</div></div></div></div>
@@ -531,7 +557,7 @@
             <div class="cell corner c4" style="grid-row: 10;grid-column: 1" id="27">Club</div>
             <div class="cell flip-cell" style="grid-row: 10;grid-column: 2;" id="28"><div class="flip-inner"><div class="flip-front">Tax</div><div class="flip-back"><div>Rent: ₹600</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 10;grid-column: 3;" id="29"><div class="flip-inner"><div class="flip-front">Shimla</div><div class="flip-back"><div>Buy: ₹2200</div><div>Rent: ₹220</div></div></div></div>
-            <div class="cell flip-cell" style="grid-row: 10;grid-column: 4;" id="30"><div class="flip-inner"><div class="flip-front">Chance</div><div class="flip-back"><div>--</div><div>---</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 4;" id="30"><div class="flip-inner"><div class="flip-front">Chennai</div><div class="flip-back"><div>Buy: ₹4500</div><div>Rent: ₹450</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 10;grid-column: 5;" id="31"><div class="flip-inner"><div class="flip-front">Southern Railway</div><div class="flip-back"><div>Buy: 9500</div><div>Rent: 950</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 10;grid-column: 6;" id="32"><div class="flip-inner"><div class="flip-front">Community Chest</div><div class="flip-back"><div>---</div><div>-- -</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 10;grid-column: 7;" id="33"><div class="flip-inner"><div class="flip-front">Srinagar</div><div class="flip-back"><div>Buy: 5000</div><div>Rent: 500</div></div></div></div>
@@ -548,10 +574,6 @@
             <div class="cell flip-cell" style="grid-row: 4;grid-column: 1;" id="21"><div class="flip-inner"><div class="flip-front">Northern Railway</div><div class="flip-back"><div>Buy: 9000</div><div>Rent: 900</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 3;grid-column: 1;" id="20"><div class="flip-inner"><div class="flip-front">Motor Boat</div><div class="flip-back"><div>Buy: 7500</div><div>Rent: 750</div></div></div></div>
             <div class="cell flip-cell" style="grid-row: 2;grid-column: 1;" id="19"><div class="flip-inner"><div class="flip-front">Jaipur</div><div class="flip-back"><div>Buy: 3000</div><div>rent: 300</div></div></div></div>
-            <!--Dice-->
-            <!--<div>
-            <button id="btn1" style="width:50px;height:50px;" onclick="game()"></button>
-            </div> -->
         </div>
         <div class="bottom-player-row">
             <div class="player-card p1-box">
@@ -590,7 +612,7 @@
             let resolveChoice;
             var btn1=document.getElementById("btn1");
             var jail=[0,0,0,0],homemoney=[0,0,0,0];
-            var loan=[0,0,0,0],loanamount=[0,0,0,0];
+            var bank=50000,loan=[0,0,0,0],loanamount=[0,0,0,0];
             function diceroll(random){
                 let a1 = random + ".png";
                 btn1.style.backgroundImage="url('" + a1 + "')";
@@ -623,6 +645,7 @@
                 //}
             }
             function probdie(){
+                //probability-dice
                 let r=Math.random();
                 if(r<0.2) return 1;
                 if(r<0.4) return 2;
@@ -661,7 +684,7 @@
                     window[player+"loc"]=nextRawLoc%map.length;
                     if(nextRawLoc>=map.length){
                         window[player]+=10000;
-                        document.getElementById(text).innerText=window[player];
+                        document.getElementById(text).innerText="₹"+window[player];
                     }
                     //jail
                     if((window[player+"loc"]%map.length)===9){
@@ -701,7 +724,7 @@
                         let resthousebonus=11000;
                         window[player]+=resthousebonus;
                         homemoney[playerIndex]+=resthousebonus;
-                        document.getElementById(text).innerText=window[player];
+                        document.getElementById(text).innerText="₹"+window[player];
                         alert(player.toUpperCase()+" rested at Rest House and received ₹11000");
                         turns1++;
                         for(let btn of btns){
@@ -714,7 +737,7 @@
                         let clubhousefee=4000;
                         window[player]-=clubhousefee;
                         homemoney[playerIndex]-=clubhousefee;
-                        document.getElementById(text).innerText=window[player];
+                        document.getElementById(text).innerText="₹"+window[player];
                         alert(player.toUpperCase()+" Vistited club house and spent ₹4000");
                         turns1++;
                         for(let btn of btns){
@@ -731,14 +754,15 @@
                     let abc=document.getElementById("abc");
                     let abc1=document.getElementById("abc1");
                     if(currentSquare && currentSquare[2]>0&&choices==="buy"&&!window['assets'+player].includes(currentSquare[0])&&!totalassets.includes(currentSquare[0])&&window[player+"loc"]!=28&&window[player+"loc"]!=34){
-                        window[player]-=currentSquare[1];
-                        document.getElementById(text).innerText=window[player];
+                        window[player]-=currentSquare[1];bank+=currentSquare[1];
+                        document.getElementById(text).innerText="₹"+window[player];
                         window['assets'+player].push(currentSquare[0]);
                         totalassets.push(currentSquare[0]);
                         totalcards++;
                         if(totalcards===30){
                             winner();
                         }
+                        document.getElementById("bank-total").innerText="₹"+bank;
                         let a1=document.getElementById(window[player+"loc"]%map.length);
                         a1.style.color=window[player+"col"];
                         currentSquare[3]=player;
@@ -746,19 +770,16 @@
                         //no-work
                     }else{
                         window[player]-=currentSquare[2];
-                        document.getElementById(text).innerText=window[player];
+                        document.getElementById(text).innerText="₹"+window[player];
                         if(currentSquare[3]!=="Bank"){
                             window[currentSquare[3]]+=currentSquare[2];
-                            document.getElementById(currentSquare[3]+"rate").innerText=window[currentSquare[3]];
+                            document.getElementById(currentSquare[3]+"rate").innerText="₹"+window[currentSquare[3]];
                         }else{
-                            //will be credited to bank
+                            bank+=currentSquare[2];
+                            document.getElementById("bank-total").innerText="₹"+bank;
                         }
                     }
                     console.log(window[player]);
-                    //if(window[player]<5000){
-                    //    window[player]+=10000;
-                    //    window[loanamount[playerIndex]]=10000;
-                    //}
                     turns1++;
                     for(let btn of btns){
                         btn.style.cursor="pointer";
@@ -766,7 +787,6 @@
                     }
                     if(border) border.style.border="3px solid #4A3B2C";
                 }
-
             }
             function payements(x1){
                 if(player===x1.split(" ")[1]){
@@ -816,7 +836,7 @@
                 ["Assam",2700,250,"Bank"],//11            10
                 ["Western railway",9500,900,"Bank"],//12  11
                 ["Cuttack",3000,300,"Bank"],//13          12
-                ["Chance",0,0,"Bank"],//14                    
+                ["Goa",3500,350,"Bank"],//14                    
                 ["Patna",2000,200,"Bank"],//15             13
                 ["Gwalior",3000,300,"Bank"],//16           14
                 ["Indore",3500,350,"Bank"],//17            15
@@ -834,7 +854,7 @@
                 ["Club",0,0,"Bank"],//27
                 ["Tax",0,600,"Bank"],//28
                 ["Shimla",2200,220,"Bank"],//29            24
-                ["Chance",0,0,"Bank"],//30                
+                ["Chennai",4500,450,"Bank"],//30                
                 ["Southern Railway",9500,950,"Bank"],//31  25
                 ["Community chest",0,0,"Bank"],//32        26
                 ["Srinagar",5000,500,"Bank"],//33          27
