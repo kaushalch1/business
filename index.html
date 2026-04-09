@@ -503,7 +503,7 @@
                 bottom:2px;right:2px;
             }
             .overlay{
-                /*display:none;*/
+                display:none;
                 position: fixed;
                 top: 0;left: 0;
                 width:100%;height:100%;
@@ -518,6 +518,23 @@
                 border: 2.5px solid white;
                 border-radius: 8px;
                 background-color: var(--wood-dark);
+            }
+            .popup-table{
+                width: 100%;
+                border-collapse: collapse;
+                border: 2px solid var(--text-gold);
+                margin: 10px 0;
+                color: var(--text-gold);
+            }
+            .popup-table th,
+            .popup-table td{
+                border: 1px solid var(--text-gold);
+                padding: 6px;
+                text-align: center;
+            }
+            .popup-table th{
+                background: rgba(0,0,0,0.25);
+                font-weight: 700;
             }
             #popbutton{
                 background-color: var(--wood-main);
@@ -641,10 +658,11 @@
                         <th>Player</th>
                         <th>Loan</th>
                         <th>Assets</th>
-                        <th>Current Balancce</th>
+                        <th>Current Balance</th>
                         <th>Total</th>
                     </tr>
                     </thead>
+                    <tbody id="popup-stats-body"></tbody>
                 </table>
                 <p id="winner"></p>
                 <button onclick="window.location.reload()" id="popbutton">Retry</button>
@@ -888,10 +906,24 @@
                 }
                 p1total-=loan[0];p2total-=loan[1];
                 p3total-=loan[2];p4total-=loan[3];
-                let sortwinners=[p1total,p2total,p3total,p4total];
-                sortwinners.sort((x,y)=>x-y);
-                let winner=sortwinners[3],winner1=sortwinners[2],winner2=sortwinners[1],winner3=sortwinners[0];
-                
+                let rows=[
+                    {name:"P1", loan: loan[0], assets: p1total-p1+loan[0], balance: p1, total: p1total},
+                    {name:"P2", loan: loan[1], assets: p2total-p2+loan[1], balance: p2, total: p2total},
+                    {name:"P3", loan: loan[2], assets: p3total-p3+loan[2], balance: p3, total: p3total},
+                    {name:"P4", loan: loan[3], assets: p4total-p4+loan[3], balance: p4, total: p4total}
+                ];
+                //sort
+                rows.sort((a,b)=>b.total-a.total);
+                let body=document.getElementById("popup-stats-body");
+                body.innerHTML="";
+                for(let i=0;i<rows.length;i++){
+                    let r=rows[i];
+                    let tr=document.createElement("tr");
+                    tr.innerHTML="<td>"+r.name+"</td><td>₹"+r.loan+"</td><td>₹"+r.assets+"</td><td>₹"+r.balance+"</td><td>₹"+r.total+"</td>";
+                    body.appendChild(tr);
+                }
+                document.getElementById("winner").innerText=rows[0].name+" is the winner!";
+                document.getElementById("popup").style.display="block";
             }
             let map=[
                 //group 1
