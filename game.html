@@ -1,0 +1,972 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            Business board game
+        </title>
+    <style>
+            .game-board{
+                display: grid;
+                grid-template-columns: repeat(10,1fr);
+                grid-template-rows: repeat(10,1fr);
+                width: 105vmin;
+                height: 95vmin;
+                background: #ECF0F1;
+                border: 5px solid #333333;
+                position: relative;
+            }
+            body{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                background: #2C3E50;
+                font-family: sans-serif;
+                -webkit-text-stroke: 0.02px black;
+            }
+            .color-bar{
+                height: 20%;
+                width: 100%;
+                position: absolute;
+                border-bottom: 1px solid #333333;
+            }
+            .cell{
+                border: 1px solid gray;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                line-height: 1.15;
+                font-weight: bold;
+                position:relative;
+                text-align: center;
+                overflow-wrap: normal;
+                word-break: normal;
+                hyphens: none;
+                background: white;
+                padding: 2px;
+                box-sizing: border-box;
+                
+            }
+            .corner{
+                background: #DCDDE1;
+                justify-content: center;
+                font-size: 0.9rem;
+            }
+            #title{
+                position: absolute;
+                inset: 0;
+                margin: 0;
+                display: grid;
+                place-items: center;
+                text-align: center;
+                pointer-events: none;
+            }
+            .c1{
+                background-color: #FBBF24;
+                color: white;
+            }
+            .c2{
+                background-color: #dd4c4c;
+                color: white;
+            }
+            .c3{
+                background-color: rgb(114, 236, 108);
+                color: white;
+            }
+            .c4{
+                background-color: rgb(106, 106, 225);
+                color: white;
+            }
+            .price-card{
+                position: absolute;
+                bottom: calc(100% + 6px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: white;
+                color: #222;
+                border: 1px solid #bfc5cc;
+                border-radius: 6px;
+                padding: 6px 8px;
+                font-size: 0.68rem;
+                line-height: 1.25;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease;
+                z-index: 20;
+            }
+            .cell:hover .price-card{
+                opacity: 1;
+            }
+            .flip-cell{
+                padding: 2px;
+                perspective: 700px;
+            }
+            .flip-inner{
+                position: relative;
+                width: 100%;
+                height: 100%;
+                transform-style: preserve-3d;
+                transition: transform 0.45s ease;
+            }
+            .flip-cell:hover .flip-inner{
+                transform: rotateY(180deg);
+            }
+            .flip-front,.flip-back{
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                overflow-wrap: normal;
+                word-break: normal;
+                hyphens: none;
+                padding: 0;
+                box-sizing: border-box;
+                backface-visibility: hidden;
+            }
+            .flip-front{
+                background: white;
+            }
+            .flip-back{
+                background: white;
+                color: #222;
+                flex-direction: column;
+                font-size: 0.66rem;
+                line-height: 1.25;
+                transform: rotateY(180deg);
+                font-weight: bold;
+            }
+            :root {
+                --wood-main: #8d735b;
+                --wood-dark: #5d4a37;
+                --panel-inset: #6b5540;
+                --slot-deep: #3e3024;
+                --text-gold: #dcbfa6;
+                --screen-green: #00ff41;
+                --p1-title: #e63f58;
+                --p2-title: #20aef3;
+                --p3-title: #68d9a8;
+                --p4-title: #f6c97c;
+            }
+            body {
+                background-color: #1a1a1a;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                /* color: var(--text-gold); */
+                align-items: flex-start;
+                min-height: 100vh;
+                margin: 0;
+                padding: 24px;
+                box-sizing: border-box;
+                background-image: radial-gradient(circle, #2c3e50 0%, #000 100%);
+                overflow-x: auto;
+            }
+            .game-table {
+                background: #8D735B;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5);
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                border: 12px solid #4a3b2c;
+                width: min(100%, 1280px);
+                box-sizing: border-box;
+            }
+            .top-section {
+                display: grid;
+                grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
+                gap: 20px;
+                align-items: start;
+            }
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+                max-width: 240px;
+            }
+            .panel {
+                background: var(--panel-inset);
+                padding: 15px;
+                border-radius: 12px;
+                box-shadow: inset 4px 4px 12px rgba(0,0,0,0.5);
+                text-align: center;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .panel h3 { 
+                margin: 0 0 10px 0; 
+                font-size: 11px; 
+            }
+            .dice-tray {
+                background: var(--slot-deep);
+                height: 100px;
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;
+                cursor: pointer;
+                box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
+            }
+            .die {
+                width: 45px;
+                height: 45px;
+                background: #fff;
+                color: #111;
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                font-weight: bold;
+                box-shadow: 3px 3px 0px #aaa;
+            }
+            .board {
+                background: #fff;
+                display: grid;
+                grid-template-columns: repeat(11, 1fr);
+                grid-template-rows: repeat(11, 1fr);
+                width: 620px;
+                height: 620px;
+                color: #222;
+                border: 5px solid #222;
+            }
+            .game-board {
+                width: min(100%, 620px);
+                aspect-ratio: 1 / 1;
+                height: auto;
+                justify-self: center;
+            }
+            .cell {
+                border: 1px solid #ccc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+            }
+            .center-logo {
+                grid-column: 2 / 11;
+                grid-row: 2 / 11;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 40px;
+                font-weight: 900;
+                color: rgba(0,0,0,0.06);
+            }    
+            .bottom-player-row {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                width: 100%;
+                grid-column: 1 / -1;
+                justify-self: stretch;
+            }
+            .player-card {
+                background: var(--panel-inset);
+                padding: 8px;
+                border: 3px solid #4A3B2C;
+                border-radius: 10px;
+                text-align: center;
+                box-sizing: border-box;
+                width: 100%;
+            }
+
+            .player-card h3 {
+                margin: 0 0 6px 0;
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.3px;
+                line-height: 1.1;
+                white-space: nowrap;
+                text-shadow: 0 1px 0 rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.35);
+            }
+            .bottom-player-row .player-card:nth-child(1) h3 { color: var(--p1-title); }
+            .bottom-player-row .player-card:nth-child(2) h3 { color: var(--p2-title); }
+            .bottom-player-row .player-card:nth-child(3) h3 { color: var(--p3-title); }
+            .bottom-player-row .player-card:nth-child(4) h3 { color: var(--p4-title); }
+            .display-screen {
+                background: #080808;
+                color: var(--screen-green);
+                font-family: 'Courier New', monospace;
+                font-size: 13px;
+                padding: 6px 4px;
+                text-align: right;
+                border-radius: 4px;
+                border: 1px solid #333;
+                box-shadow: inset 0 0 8px rgba(0,255,65,0.2);
+                white-space: nowrap;
+            }
+            .bank-note {
+                width: 30px;
+                height: 18px;
+                background: #c8e6c9;
+                display: inline-block;
+                margin: 5px 2px 0;
+                border-radius: 2px;
+                opacity: 0.7;
+            }
+            .rent{
+                margin-top: 5%;
+                height: 25px;
+                width: 50px;
+                background-color: #DD4C4C;
+                border: 1px solid #F28C8C;
+                border-radius: 5px;
+                color:  white;
+                cursor: pointer;
+                display: none;
+            }
+            .buy{
+                cursor: pointer;
+                margin-top: 5%;
+                height: 25px;
+                width: 50px;
+                background-color: #72EC6C;
+                border: 1px solid #A8F5A2;
+                border-radius: 5px;
+                margin-right: 10%;
+                display: none;
+            }
+            .rent:hover{
+                background-color: #212830;
+                color: #FA4B3C;
+                border: none;
+            }
+            .buy:hover{
+                border: none;
+                color: #72EC6C;
+                background-color: #212830;
+            }
+            @media (max-width: 1180px) {
+                .game-table {
+                    padding: 20px;
+                }
+
+                .top-section {
+                    grid-template-columns: 1fr;
+                    justify-items: center;
+                }
+
+                .sidebar {
+                    max-width: 620px;
+                }
+
+                .game-board {
+                    width: min(100%, 620px);
+                }
+
+                .bottom-player-row {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+            @media (max-width: 720px) {
+                body {
+                    padding: 6px;
+                }
+
+                .game-table {
+                    padding: 12px;
+                    border-width: 6px;
+                    border-radius: 14px;
+                }
+
+                .top-section {
+                    gap: 12px;
+                }
+
+                .panel {
+                    padding: 10px;
+                }
+
+                .bottom-player-row {
+                    gap: 6px;
+                    padding-top: 8px;
+                    grid-template-columns: 1fr;
+                }
+
+                .player-card {
+                    padding: 6px;
+                    border-radius: 8px;
+                }
+
+                .player-card h3 {
+                    font-size: 11px;
+                    margin-bottom: 4px;
+                }
+
+                .display-screen {
+                    font-size: 12px;
+                    padding: 5px 3px;
+                }
+            }
+            .bank-panel{
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+
+            }
+            .bank-balance{
+                background: #080808;
+                color: #FFDE59;
+                font-size: 1.2rem;
+                padding: 12px;
+                text-align: center;
+                border-radius: 6px;
+                border: 2px solid #444444;
+                margin-bottom: 5px;
+                box-shadow: inset 0 0 10px rgba(255,222,90,0.15);
+            }
+            .bank-buttons{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .bank-btn{
+                color: var(--text-gold);
+                border: 1px solid #4A3B2C;
+                background-color: rgb(165, 93, 42);
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 11.4px;
+                text-transform: uppercase;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .bank-btn:hover{
+                border: 1px solid white;
+                color: white;
+            }
+            .player-piece-container{
+                position: absolute;
+                bottom: 4px;
+                left: 0;right: 0;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 3px;
+                pointer-events: none;
+                z-index: 10;
+            }
+            .player-piece{
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                border: 1px solid rgba(255,255,255,0.4);
+                box-shadow: 0 2 4px rgba(0,0,0,0.4),
+                inset -2 -2 4px rgba(0,0,0,0.3);
+                position: absolute;
+            }
+            .player-piece::after{
+                content: '';
+                position: absolute;
+                top: 2px;
+                left: 3px;
+                width: 5px;
+                height: 3px;
+                background: rgba(255,255,255,0.5);
+                border-radius: 50%;
+            }
+            .p1-piece{
+                background: radial-gradient(circle at 30% 30%,#ff7a89,#e63f58);
+                bottom: 2px;left: 2px;
+            }
+            .loan{
+                font-family: 'Courier New',monospace;
+                margin-bottom: -22px;
+                color: #dc143C;
+                font-size: 15px;
+                margin-right: 250px;
+            }
+            .p2-piece{
+                background: radial-gradient(circle at 30% 30%,#5fe3ff,#20aef3);
+                top: 2px;left: 2px;
+            }
+            .p3-piece{
+                background: radial-gradient(circle at 30% 30%,#9cefcf,#68d9a8);
+                top:2px;right:2px;
+            }
+            .p4-piece{
+                background: radial-gradient(circle at 30% 30%,#ffe2b2,#f6c97c);
+                bottom:2px;right:2px;
+            }
+            .overlay{
+                display:none;
+                position: fixed;
+                top: 0;left: 0;
+                width:100%;height:100%;
+                background: rgba(0,0,0,0.4);
+                z-index:10;
+            }
+            .popcontent{
+                background: white;
+                padding: 20px;
+                width: 300px;
+                margin:15% auto;
+                border: 2.5px solid white;
+                border-radius: 8px;
+                background-color: var(--wood-dark);
+            }
+            .popup-table{
+                width: 100%;
+                border-collapse: collapse;
+                border: 2px solid var(--text-gold);
+                margin: 10px 0;
+                color: var(--text-gold);
+            }
+            .popup-table th,
+            .popup-table td{
+                border: 1px solid var(--text-gold);
+                padding: 6px;
+                text-align: center;
+            }
+            .popup-table th{
+                background: rgba(0,0,0,0.25);
+                font-weight: 700;
+            }
+            #popbutton{
+                background-color: var(--wood-main);
+                height: 30px;
+                width: 50px;
+                color: var(--text-gold);
+                border: 1px solid white;
+                border-radius: 4px;
+            }
+            #popbutton:hover{
+                color: white;
+                border: 2px solid white
+            }
+</style>      
+    </head>
+    <body>
+        <div class="game-table">
+        <div class="top-section">
+            <div class="sidebar">
+                <div class="panel bank-panel">
+                    <h3 style="color: var(--text-gold);">Reserve bank</h3>
+                    <div class="bank-balance" id="bank-total">
+                        ₹50000
+                    </div>
+                    <div class="bank-buttons">
+                        <button class="bank-btn" id="take-loan" onclick="takeloan()">Take loan</button>
+                        <button class="bank-btn" id="pay-loan" onclick="payloan()">Pay loan</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3 style="color: var(--text-gold);">Dice tray</h3>
+                    <div class="dice-tray">
+                        <!-- main  dice-->
+                        <button class="die" id="btn1" onclick="game()" title="Roll dice" aria-label="Roll dice"></button>
+                    </div>
+                    <p style="font-size: 19px;color: var(--text-gold);margin-top: 4px;opacity: 0.6;margin-bottom: -10px;">Click on dice to roll</p>
+                </div>
+            </div>
+        <div class="game-board">
+
+            <div class="cell corner c1" style="grid-row:1;grid-column: 1;" id="18">Rest House</div>
+            
+            <div class="cell flip-cell" style="grid-row: 2;grid-column: 10;" id="8"><div class="flip-inner"><div class="flip-front">Kolkata</div><div class="flip-back"><div>Buy: ₹4500</div><div>Rent: ₹450</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 3;grid-column: 10;" id="7"><div class="flip-inner"><div class="flip-front">Hyderabad</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹550</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 4;grid-column: 10;" id="6"><div class="flip-inner"><div class="flip-front">Bangalore</div><div class="flip-back"><div>Buy: ₹5000</div><div>Rent: ₹500</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 5;grid-column: 10;" id="5"><div class="flip-inner"><div class="flip-front">Cochin</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 6;grid-column: 10" id="4"><div class="flip-inner"><div class="flip-front">Air India</div><div class="flip-back"><div>Buy: ₹10000</div><div>Rent: ₹1000</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 7;grid-column: 10;" id="3"><div class="flip-inner"><div class="flip-front">Ahmedabad</div><div class="flip-back"><div>Buy: ₹4000</div><div>Rent: ₹400</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 8;grid-column: 10;" id="2"><div class="flip-inner"><div class="flip-front">Water works</div><div class="flip-back"><div>Buy: ₹3200</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 9;grid-column: 10;" id="1"><div class="flip-inner"><div class="flip-front">Mumbai</div><div class="flip-back"><div>Buy: ₹8500</div><div>Rent: ₹800</div></div></div></div>
+            
+            <h2 id="title">Business board <br>game</h2>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 2;" id="17"><div class="flip-inner"><div class="flip-front">Indore</div><div class="flip-back"><div>Buy: ₹3500</div><div>Rent: ₹350</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 3;" id="16"><div class="flip-inner"><div class="flip-front">Gwalior</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 4;" id="15"><div class="flip-inner"><div class="flip-front">Patna</div><div class="flip-back"><div>Buy: ₹2000</div><div>Rent: ₹200</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 5;" id="14"><div class="flip-inner"><div class="flip-front">Goa</div><div class="flip-back"><div>Buy: ₹3500</div><div>Rent: ₹350</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 6;" id="13"><div class="flip-inner"><div class="flip-front">Cuttack</div><div class="flip-back"><div>Buy: ₹3000</div><div>Rent: ₹300</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 7;" id="12"><div class="flip-inner"><div class="flip-front">Western railway</div><div class="flip-back"><div>Buy: ₹9500</div><div>Rent: ₹950</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 8;" id="11"><div class="flip-inner"><div class="flip-front">Assam</div><div class="flip-back"><div>Buy: ₹2700</div><div>Rent: ₹250</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 1;grid-column: 9;" id="10"><div class="flip-inner"><div class="flip-front">Electric Company</div><div class="flip-back"><div>Buy: ₹2500</div><div>Rent: ₹200</div></div></div></div>
+            <div class="cell corner c2" style="grid-row: 1;grid-column: 10" id="9">Jail</div>
+
+            <div class="cell corner c4" style="grid-row: 10;grid-column: 1" id="27">Club</div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 2;" id="28"><div class="flip-inner"><div class="flip-front">Tax</div><div class="flip-back"><div>Rent: ₹600</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 3;" id="29"><div class="flip-inner"><div class="flip-front">Shimla</div><div class="flip-back"><div>Buy: ₹2200</div><div>Rent: ₹220</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 4;" id="30"><div class="flip-inner"><div class="flip-front">Chennai</div><div class="flip-back"><div>Buy: ₹4500</div><div>Rent: ₹450</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 5;" id="31"><div class="flip-inner"><div class="flip-front">Southern Railway</div><div class="flip-back"><div>Buy: 9500</div><div>Rent: 950</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 6;" id="32"><div class="flip-inner"><div class="flip-front">Community Chest</div><div class="flip-back"><div>---</div><div>-- -</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 7;" id="33"><div class="flip-inner"><div class="flip-front">Srinagar</div><div class="flip-back"><div>Buy: 5000</div><div>Rent: 500</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 8;" id="34"><div class="flip-inner"><div class="flip-front">Wealth Tax</div><div class="flip-back"><div>Rent: 700</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 10;grid-column: 9;" id="35"><div class="flip-inner"><div class="flip-front">Vizag</div><div class="flip-back"><div>Buy: 3200</div><div>Rent: 320</div></div></div></div>
+            <div class="cell corner c3" style="grid-row: 10;grid-column: 10;" id="0";>
+            Go</div>
+
+            <div class="cell flip-cell" style="grid-row: 9;grid-column: 1;" id="26"><div class="flip-inner"><div class="flip-front">Delhi</div><div class="flip-back"><div>Buy: 6000</div><div>Rent: 600</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 8;grid-column: 1;" id="25"><div class="flip-inner"><div class="flip-front">Chandigarh</div><div class="flip-back"><div>Buy: 2500</div><div>Rent: 250</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 7;grid-column: 1;" id="24"><div class="flip-inner"><div class="flip-front">Lucknow</div><div class="flip-back"><div>Buy: 3500</div><div>Rent: 350</div></div></div></div>
+            <div class="cell flip-cell" style="grid-column: 1;grid-row: 6;" id="23"><div class="flip-inner"><div class="flip-front">Utility</div><div class="flip-back"><div>Buy: 3200</div><div>Rent: 320</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 5;grid-column: 1;" id="22"><div class="flip-inner"><div class="flip-front">Kanpur</div><div class="flip-back"><div>Buy: 4000</div><div>Rent: 400</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 4;grid-column: 1;" id="21"><div class="flip-inner"><div class="flip-front">Northern Railway</div><div class="flip-back"><div>Buy: 9000</div><div>Rent: 900</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 3;grid-column: 1;" id="20"><div class="flip-inner"><div class="flip-front">Motor Boat</div><div class="flip-back"><div>Buy: 7500</div><div>Rent: 750</div></div></div></div>
+            <div class="cell flip-cell" style="grid-row: 2;grid-column: 1;" id="19"><div class="flip-inner"><div class="flip-front">Jaipur</div><div class="flip-back"><div>Buy: 3000</div><div>rent: 300</div></div></div></div>
+        </div>
+        <div class="bottom-player-row">
+            <div class="player-card p1-box">
+                <h3>Player 1</h3>
+                <div class="loan" id="p1-loan">₹0</div>
+                <div class="display-screen" id="p1rate">₹25000</div>
+                <button class="buy p1" onclick="payements('buy p1')">Buy</button>
+                <button class="rent p1" onclick="payements('rent p1')">Rent</button>
+            </div>
+            <div class="player-card p2-box">
+                <h3>Player 2</h3>
+                <div class="loan" id="p2-loan">₹0</div>
+                <div class="display-screen" id="p2rate">₹25000</div>
+                <button class="buy p2" onclick="payements('buy p2')">Buy</button>
+                <button class="rent p2" onclick="payements('rent p2')">Rent</button>
+            </div>
+            <div class="player-card p3-box">
+                <h3>Player 3</h3>
+                <div class="loan" id="p3-loan">₹0</div>
+                <div class="display-screen" id="p3rate">₹25000</div>
+                <button class="buy p3" onclick="payements('buy p3')">Buy</button>
+                <button class="rent p3" onclick="payements('rent p3')">Rent</button>
+            </div>
+            <div class="player-card p4-box">
+                <h3>Player 4</h3>
+                <div class="loan" id="p4-loan">₹0</div>
+                <div class="display-screen" id="p4rate">₹25000</div>
+                <button class="buy p4" onclick="payements('buy p4')">Buy</button>
+                <button class="rent p4" onclick="payements('rent p4')">Rent</button>
+            </div>
+        </div>
+        </div>
+        <div class="overlay" id="popup">
+            <div class="popcontent">
+                <h2>Congratulations!</h2>
+                <table class="popup-table">
+                    <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Loan</th>
+                        <th>Assets</th>
+                        <th>Current Balance</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody id="popup-stats-body"></tbody>
+                </table>
+                <p id="winner"></p>
+                <button onclick="window.location.reload()" id="popbutton">Retry</button>
+            </div>
+        </div>
+        <script>
+            var p1=25000,p2=25000,p3=25000,p4=25000,currplayer,currplayerindex;
+            var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
+            var turns=["p1","p2","p3","p4"],turns1=0,x=-1,dice=-1;
+            var assetsp1=[],assetsp2=[],assetsp3=[],assetsp4=[],a1,totalassets=[],totalcards=0;
+            var p1col="#E63F58",p2col="#20AEF3",p3col="#68D9A8",p4col="#F6C97C";
+            var payement="",player="";
+            let resolveChoice;
+            var btn1=document.getElementById("btn1");
+            var jail=[0,0,0,0],homemoney=[0,0,0,0];
+            var bank=50000,loan=[0,0,0,0],loanamount=[0,0,0,0],loandue=[-1,-1,-1,-1];
+            function diceroll(random){
+                let a1 = random + ".png";
+                btn1.style.backgroundImage="url('" + a1 + "')";
+                btn1.style.backgroundSize="cover";
+            }
+            function start(){
+                let a1=document.getElementById("0");
+                let newele1=document.createElement("div");
+                newele1.className="player-piece p1-piece";
+                a1.append(newele1);
+                let newele2=document.createElement("div");
+                newele2.className="player-piece p2-piece";
+                a1.append(newele2);
+                let newele3=document.createElement("div");
+                newele3.className="player-piece p3-piece";
+                a1.append(newele3);
+                let newele4=document.createElement("div");
+                newele4.className="player-piece p4-piece";
+                a1.append(newele4);
+            }
+            start();
+            function piecelocation(player){
+                //if(player==="p1"){
+                    let dele1=document.getElementsByClassName("player-piece "+player+"-piece");
+                    dele1[0].remove();
+                    let a1=document.getElementById(window[player+"loc"]%map.length);
+                    let newele=document.createElement("div");
+                    newele.className="player-piece "+player+"-piece";
+                    a1.append(newele);                   
+                //}
+            }
+            function setActivePlayerBorder(player){
+                let playerCards=document.getElementsByClassName("player-card");
+                for(let card of playerCards){
+                    card.style.border="3px solid #4A3B2C";
+                }
+                let activeCard=document.getElementsByClassName(player+"-box")[0];
+                if(activeCard){
+                    activeCard.style.border="2.5px solid goldenrod";
+                }
+            }
+            function takeloan(){
+                if(loan[currplayerindex]===0){
+                    loan[currplayerindex]=10000;
+                    loandue[currplayerindex]=10000;
+                    document.getElementById(currplayer+"-loan").innerText="₹"+10000;
+                    window[currplayer]+=10000;
+                    document.getElementById(currplayer+"rate").innerText="₹"+window[currplayer];
+                    bank-=10000;
+                }
+            }
+            function payloan(){
+                if(loan[currplayerindex]>0&&loandue[currplayerindex]<=window[currplayer]){
+                    let dueAmount=loandue[currplayerindex];
+                    window[currplayer]-=loandue[currplayerindex];
+                    loan[currplayerindex]=0;
+                    loandue[currplayerindex]=-1;
+                    document.getElementById(currplayer+"-loan").innerText="₹0";
+                    document.getElementById(currplayer+"rate").innerText="₹"+window[currplayer];
+                    bank+=dueAmount;
+                }
+            }
+            function probdie(){
+                //probability-dice
+                let r=Math.random();
+                if(r<0.2) return 1;
+                if(r<0.4) return 2;
+                if(r<0.6) return 3;
+                if(r<0.8) return 4;
+                if(r<0.9) return 5;
+                return 6;
+            }
+            async function game(){
+                if(dice===turns1-1){
+                    dice++;
+                    player=turns[turns1%4];
+                    setActivePlayerBorder(player);
+                    const playerIndex=Number(player[1])-1;
+                    if(jail[playerIndex]>0){
+                        jail[playerIndex]--;
+                        turns1++;
+                        return;
+                    }currplayer=player;currplayerindex=playerIndex;
+                    if(loan[playerIndex]>0){
+                        loandue[playerIndex]++;
+                        if(loandue[playerIndex]%5===0){
+                            loan[playerIndex]+=loan[playerIndex]*0.1;
+                            loandue[playerIndex]=loan[playerIndex];
+                            document.getElementById(player+"-loan").innerText="₹"+loan[playerIndex];
+                        }
+                    }
+                    if(window[player]<0)takeloan();
+                    let random=probdie();
+                    let text=player+"rate";
+                    let btns=document.getElementsByClassName(player);
+                    for(let btn of btns){
+                        btn.style.display="inline-block";
+                    }
+                    diceroll(random);
+                    console.log(random);
+                    const previousLoc=window[player+"loc"];
+                    const nextRawLoc=previousLoc+random;
+                    window[player+"loc"]=nextRawLoc%map.length;
+                    if(nextRawLoc>=map.length){
+                        window[player]+=10000;
+                        document.getElementById(text).innerText="₹"+window[player];
+                    }
+                    //jail
+                    if((window[player+"loc"]%map.length)===9){
+                        jail[playerIndex]=2;
+                        piecelocation(player);
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        return;
+                    }
+                    var currentSquare=map[window[player+"loc"]];
+                    if(totalassets.includes(currentSquare[0])||window[player+"loc"]==28||window[player+"loc"]===34){
+                        btns[0].style.cursor="not-allowed";
+                    }
+                    piecelocation(player);
+                    //corners
+                    if(window[player+"loc"]===0||window[player+"loc"]===9){
+                        btns[0].style.cursor="not-allowed";
+                        btns[1].style.cursor="not-allowed";
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        return;
+                    }
+                    if(random===6){
+                        turns1--;dice--;
+                    }
+                    if(window[player+"loc"]===18){
+                        let resthousebonus=11000;
+                        window[player]+=resthousebonus;
+                        homemoney[playerIndex]+=resthousebonus;
+                        document.getElementById(text).innerText="₹"+window[player];
+                        alert(player.toUpperCase()+" rested at Rest House and received ₹11000");
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        return;
+                    }
+                    if(window[player+"loc"]===27){
+                        let clubhousefee=4000;
+                        window[player]-=clubhousefee;
+                        homemoney[playerIndex]-=clubhousefee;
+                        document.getElementById(text).innerText="₹"+window[player];
+                        alert(player.toUpperCase()+" Vistited club house and spent ₹4000");
+                        turns1++;
+                        for(let btn of btns){
+                            btn.style.display="none";
+                        }
+                        return;
+                    }
+                    let choice=await new Promise(resolve=>{
+                        resolveChoice=resolve;
+                    })
+                    let choices=payement.split(" ")[0];
+                    let lastpurchase=0;
+                    let abc=document.getElementById("abc");
+                    let abc1=document.getElementById("abc1");
+                    if(currentSquare && currentSquare[2]>0&&choices==="buy"&&!window['assets'+player].includes(currentSquare[0])&&!totalassets.includes(currentSquare[0])&&window[player+"loc"]!=28&&window[player+"loc"]!=34){
+                        window[player]-=currentSquare[1];bank+=currentSquare[1];
+                        document.getElementById(text).innerText="₹"+window[player];
+                        window['assets'+player].push(currentSquare[0]);
+                        totalassets.push(currentSquare[0]);
+                        totalcards++;
+                        if(totalcards===30){
+                            winner();
+                        }
+                        document.getElementById("bank-total").innerText="₹"+bank;
+                        let a1=document.getElementById(window[player+"loc"]%map.length);
+                        a1.style.color=window[player+"col"];
+                        currentSquare[3]=player;
+                    }else if(window["assets"+player].includes(currentSquare[0])){
+                        //no-work
+                    }else{
+                        window[player]-=currentSquare[2];
+                        document.getElementById(text).innerText="₹"+window[player];
+                        if(currentSquare[3]!=="Bank"){
+                            window[currentSquare[3]]+=currentSquare[2];
+                            document.getElementById(currentSquare[3]+"rate").innerText="₹"+window[currentSquare[3]];
+                        }else{
+                            bank+=currentSquare[2];
+                            document.getElementById("bank-total").innerText="₹"+bank;
+                        }
+                    }
+                    console.log(window[player]);
+                    turns1++;
+                    for(let btn of btns){
+                        btn.style.cursor="pointer";
+                        btn.style.display="none";
+                    }
+                }
+            }
+            function payements(x1){
+                if(player===x1.split(" ")[1]){
+                    payement=x1;
+                    resolveChoice();
+                }
+                /*console.log(x1);*/
+            }
+            function winner(){
+                let p1total=p1,p2total=p2,p3total=p3,p4total=p4;
+                for(let i=0;i<assetsp1.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp1[i]);
+                    if(square) p1total+=square[2];
+                }
+                for(let i=0;i<assetsp2.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp2[i]);
+                    if(square) p2total+=square[2];
+                }
+                for(let i=0;i<assetsp3.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp3[i]);
+                    if(square) p3total+=square[2];
+                }
+                for(let i=0;i<assetsp4.length;i++){
+                    let square=map.find(cell=>cell[0]===assetsp4[i]);
+                    if(square) p4total+=square[2];
+                }
+                p1total-=loan[0];p2total-=loan[1];
+                p3total-=loan[2];p4total-=loan[3];
+                let rows=[
+                    {name:"P1", loan: loan[0], assets: p1total-p1+loan[0], balance: p1, total: p1total},
+                    {name:"P2", loan: loan[1], assets: p2total-p2+loan[1], balance: p2, total: p2total},
+                    {name:"P3", loan: loan[2], assets: p3total-p3+loan[2], balance: p3, total: p3total},
+                    {name:"P4", loan: loan[3], assets: p4total-p4+loan[3], balance: p4, total: p4total}
+                ];
+                //sort
+                rows.sort((a,b)=>b.total-a.total);
+                let body=document.getElementById("popup-stats-body");
+                body.innerHTML="";
+                for(let i=0;i<rows.length;i++){
+                    let r=rows[i];
+                    let tr=document.createElement("tr");
+                    tr.innerHTML="<td>"+r.name+"</td><td>₹"+r.loan+"</td><td>₹"+r.assets+"</td><td>₹"+r.balance+"</td><td>₹"+r.total+"</td>";
+                    body.appendChild(tr);
+                }
+                document.getElementById("winner").innerText=rows[0].name+" is the winner!";
+                document.getElementById("popup").style.display="block";
+            }
+            let map=[
+                //group 1
+                ["Go",0,0,"Bank"],//0
+                ["Mumbai",8500,800,"Bank"],//1           1
+                ["Water works",3200,300,"Bank"],//2       2
+                ["Ahmedabad",4000,400,"Bank"],//3        3
+                ["Air India",10000,1000,"Bank"],//4      4
+                ["Cochin",3000,300,"Bank"],//5           5
+                ["Bangalore",5000,500,"Bank"],//6        6
+                ["Hyderabad",5500,550,"Bank"],//7        7
+                ["Kolkata",4500,450,"Bank"],//8          8
+                //group 2
+                ["Jail",0,0,"Bank"],//9
+                ["Electric Company",2500,200,"Bank"],//10 9
+                ["Assam",2700,250,"Bank"],//11            10
+                ["Western railway",9500,900,"Bank"],//12  11
+                ["Cuttack",3000,300,"Bank"],//13          12
+                ["Goa",3500,350,"Bank"],//14                    
+                ["Patna",2000,200,"Bank"],//15             13
+                ["Gwalior",3000,300,"Bank"],//16           14
+                ["Indore",3500,350,"Bank"],//17            15
+                //group 3
+                ["Rest",0,0,"Bank"],//18
+                ["Jaipur",3000,300,"Bank"],//19             16
+                ["Motor boat",7500,750,"Bank"],//20         17
+                ["Northern Railway",9000,900,"Bank"],//21   18
+                ["Kanpur",4000,400,"Bank"],//22             19
+                ["Utility",3200,320,"Bank"],//23            20
+                ["Lucknow",3500,350,"Bank"],//24            21
+                ["Chandigarh",2500,250,"Bank"],//25         22
+                ["Delhi",6000,600,"Bank"],//26              23
+                //group 4
+                ["Club",0,0,"Bank"],//27
+                ["Tax",0,600,"Bank"],//28
+                ["Shimla",2200,220,"Bank"],//29            24
+                ["Chennai",4500,450,"Bank"],//30                
+                ["Southern Railway",9500,950,"Bank"],//31  25
+                ["Community chest",0,0,"Bank"],//32        26
+                ["Srinagar",5000,500,"Bank"],//33          27
+                ["Wealth tax",0,700,"Bank"],//34
+                ["Vizag",3200,320,"Bank"]//35              28
+            ];
+        </script>
+    </body>
+</html>
