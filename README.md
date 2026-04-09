@@ -6,7 +6,7 @@ A property-and-money strategy board game for 4 players, built for the browser. P
 
 Open the help page first, then start the game.
 
-1. Open `indexi.html`.
+1. Open the link.
 2. Click **Play Game** to go to `index.html`.
 3. Click the dice button to roll.
 4. Follow the result on the board.
