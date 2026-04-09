@@ -155,7 +155,6 @@
                 --p3-title: #68d9a8;
                 --p4-title: #f6c97c;
             }
-
             body {
                 background-color: #1a1a1a;
                 font-family: 'Segoe UI', Arial, sans-serif;
@@ -171,9 +170,7 @@
                 overflow-x: auto;
             }
             .game-table {
-                background: var(--wood-main);
-                background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 10px),
-                                  linear-gradient(to bottom, var(--wood-main), var(--wood-dark));
+                background: #8D735B;
                 padding: 30px;
                 border-radius: 20px;
                 box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.5);
@@ -184,14 +181,12 @@
                 width: min(100%, 1280px);
                 box-sizing: border-box;
             }
-
             .top-section {
                 display: grid;
                 grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
                 gap: 20px;
                 align-items: start;
             }
-
             .sidebar {
                 display: flex;
                 flex-direction: column;
@@ -199,7 +194,6 @@
                 width: 100%;
                 max-width: 240px;
             }
-
             .panel {
                 background: var(--panel-inset);
                 padding: 15px;
@@ -208,7 +202,6 @@
                 text-align: center;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
             }
-
             .panel h3 { 
                 margin: 0 0 10px 0; 
                 font-size: 11px; 
@@ -224,7 +217,6 @@
                 cursor: pointer;
                 box-shadow: inset 0 5px 15px rgba(0,0,0,0.6);
             }
-
             .die {
                 width: 45px;
                 height: 45px;
@@ -238,7 +230,6 @@
                 font-weight: bold;
                 box-shadow: 3px 3px 0px #aaa;
             }
-
             .board {
                 background: #fff;
                 display: grid;
@@ -249,14 +240,12 @@
                 color: #222;
                 border: 5px solid #222;
             }
-
             .game-board {
                 width: min(100%, 620px);
                 aspect-ratio: 1 / 1;
                 height: auto;
                 justify-self: center;
             }
-
             .cell {
                 border: 1px solid #ccc;
                 display: flex;
@@ -267,7 +256,6 @@
                 text-align: center;
                 text-transform: uppercase;
             }
-
             .center-logo {
                 grid-column: 2 / 11;
                 grid-row: 2 / 11;
@@ -277,7 +265,7 @@
                 font-size: 40px;
                 font-weight: 900;
                 color: rgba(0,0,0,0.06);
-            }            
+            }    
             .bottom-player-row {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -286,13 +274,11 @@
                 grid-column: 1 / -1;
                 justify-self: stretch;
             }
-
             .player-card {
                 background: var(--panel-inset);
                 padding: 8px;
                 border: 3px solid #4A3B2C;
                 border-radius: 10px;
-                /* box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5); */
                 text-align: center;
                 box-sizing: border-box;
                 width: 100%;
@@ -516,7 +502,35 @@
                 background: radial-gradient(circle at 30% 30%,#ffe2b2,#f6c97c);
                 bottom:2px;right:2px;
             }
-            
+            .overlay{
+                /*display:none;*/
+                position: fixed;
+                top: 0;left: 0;
+                width:100%;height:100%;
+                background: rgba(0,0,0,0.4);
+                z-index:10;
+            }
+            .popcontent{
+                background: white;
+                padding: 20px;
+                width: 300px;
+                margin:15% auto;
+                border: 2.5px solid white;
+                border-radius: 8px;
+                background-color: var(--wood-dark);
+            }
+            #popbutton{
+                background-color: var(--wood-main);
+                height: 30px;
+                width: 50px;
+                color: var(--text-gold);
+                border: 1px solid white;
+                border-radius: 4px;
+            }
+            #popbutton:hover{
+                color: white;
+                border: 2px solid white
+            }
 </style>      
     </head>
     <body>
@@ -617,7 +631,25 @@
                 <button class="rent p4" onclick="payements('rent p4')">Rent</button>
             </div>
         </div>
-        </div>    
+        </div>
+        <div class="overlay" id="popup">
+            <div class="popcontent">
+                <h2>Congratulations!</h2>
+                <table class="popup-table">
+                    <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Loan</th>
+                        <th>Assets</th>
+                        <th>Current Balancce</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                </table>
+                <p id="winner"></p>
+                <button onclick="window.location.reload()" id="popbutton">Retry</button>
+            </div>
+        </div>
         <script>
             var p1=25000,p2=25000,p3=25000,p4=25000,currplayer,currplayerindex;
             var p1loc=0,p2loc=0,p3loc=0,p4loc=0;
@@ -859,6 +891,7 @@
                 let sortwinners=[p1total,p2total,p3total,p4total];
                 sortwinners.sort((x,y)=>x-y);
                 let winner=sortwinners[3],winner1=sortwinners[2],winner2=sortwinners[1],winner3=sortwinners[0];
+                
             }
             let map=[
                 //group 1
