@@ -84,7 +84,7 @@ When the game ends, a popup shows:
 The players are sorted by total score, highest first, and the top player is declared the winner.
 ## Tech Stack
 
-- HTML5 for structure
+- HTML for structure
 - CSS for layout and styling
 - JavaScript for gameplay logic
 <img width="1596" height="897" alt="image" src="https://github.com/user-attachments/assets/3ff7ca35-6b51-48b6-b0c6-ae7ba5edbf01" />
